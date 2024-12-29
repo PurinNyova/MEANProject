@@ -4,8 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const path_1 = __importDefault(require("path"));
 const app = (0, express_1.default)();
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`Running on ${PORT}`);
+const port = 3000;
+// Serve HTML file
+app.get('/', (req, res) => {
+    res.sendFile(path_1.default.join(__dirname, 'views', 'index.html'));
+});
+app.listen(port, () => {
+    console.log(`Server is running at http://localhost:${port}`);
 });

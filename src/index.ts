@@ -1,13 +1,22 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import usersRouter from './routes/users';
-const app = express();
-const PORT: number = 3000;
-app.use(express.json());
+import socialsRouter from  './routes/socials';
+import path from 'path';
 
-app.get('/', (request, response) => {
-  response.status(200).send('index.html')
+const app = express();
+const port = 3000;
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use("/api/users", usersRouter)
+app.use("/api/socials", socialsRouter)
+
+// Serve HTML file
+app.get('/', (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(PORT, () => {
-    console.log(`Running on ${PORT}`);
-})
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
+});
+  
