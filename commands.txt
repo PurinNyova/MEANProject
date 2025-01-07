@@ -1,0 +1,7 @@
+npm i -D typescript
+npm i express
+npm i -D @types/express 
+npm i -D nodemon
+npm i -D ts-node
+npx tsc --init
+npx tsc --build

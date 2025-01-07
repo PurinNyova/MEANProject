@@ -20,7 +20,7 @@ nav {
 
 nav ul {
   padding: 0;
-  width: 60%;
+  width: 25vw;
 }
   
   /* Style the navigation list items */
@@ -32,6 +32,7 @@ nav li {
 
 nav li:hover {
   background-color: green;
+  color: white;
   border-radius: 10px;
   padding: 1%;
 }
