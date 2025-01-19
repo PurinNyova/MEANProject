@@ -24,7 +24,7 @@ router.get("/id/:id", idVar, (request: Request, response: Response) => {
 
 router.get("/", (request: Request, response: Response) => {
     response.json({
-        response: `Welcome anonymous`, ...mockUsers
+        response: `Welcome anonymous`, data: mockUsers
     })
 })
 
@@ -33,7 +33,7 @@ router.post("/", (request: Request, response: Response) => {
     if (!name || !email) {
         response.status(400).json({response: "Invalid Body"})
     }
-    if (mockUsers.find((naame) => {naame === name})) {
+    if (mockUsers.find((user) => {return user.name === name})) {
         response.status(401).json({response: "User already exist"})
     }
     mockUsers.push({name: name, email: email})
