@@ -10,7 +10,11 @@ import AboutPage from "./pages/AboutPage";
 function App() {
 
   return (
-    <Box minH={"100vh"} bg={{base:"purple.200", _dark:"purple.950"}} transition={"backgrounds"} transitionDuration={"fast"}>
+    <Box minH={"100vh"}
+    bgGradient={"to-b"}
+    gradientFrom={{base:"purple.100", _dark:"purple.950"}}
+    gradientTo={{base:"purple.300", _dark:"violet"}}
+    transition={"backgrounds"} transitionDuration={"fast"}>
      <Navbar />
      <Routes>
       <Route path='/' element={<HomePage />} />
