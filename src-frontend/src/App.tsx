@@ -1,7 +1,7 @@
 //import { useState } from 'react'
 //import reactLogo from './assets/react.svg'
 //import viteLogo from '/vite.svg'
-import { Button, Box } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import Navbar from "./components/navbar";
@@ -14,7 +14,7 @@ function App() {
     bgGradient={"to-b"}
     gradientFrom={{base:"purple.100", _dark:"purple.950"}}
     gradientTo={{base:"purple.300", _dark:"violet"}}
-    transition={"backgrounds"} transitionDuration={"fast"}>
+    transitionProperty={"background"} transitionDuration={"fast"}>
      <Navbar />
      <Routes>
       <Route path='/' element={<HomePage />} />
