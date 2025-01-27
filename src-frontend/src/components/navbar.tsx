@@ -1,5 +1,6 @@
 import { Button, Container, Flex, HStack, Link, Text } from '@chakra-ui/react';
 import { ColorModeButton } from './ui/color-mode';
+import SideBar from './sidebar';
 
 const navbar = () => {
   return (
@@ -13,8 +14,11 @@ const navbar = () => {
             sm:"row"
         }}
         >
+
+        <Container hideFrom={"md"} p={0} w={"5px"} m={0} alignContent={"start"}><SideBar /></Container>
+
         <Text
-        fontSize={{ base: "22", sm: "28"}}
+        fontSize={{ base: "10pt", md: "12pt"}}
         fontWeight={"bold"}
         textTransform={"uppercase"}
         textAlign={"center"}
@@ -27,7 +31,7 @@ const navbar = () => {
             <Link href=''>
             <Text color={{base: "black", _dark: "white"}}>Pendaftaran</Text>
             </Link>
-            <Link href=''>
+            <Link href='/list'>
             <Text color={{base: "black", _dark: "white"}}>List Mahasiswa</Text>
             </Link>
             <Link href=''>
