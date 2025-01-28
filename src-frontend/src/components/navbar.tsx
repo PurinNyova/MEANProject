@@ -35,10 +35,7 @@ const navbar = () => {
             <Text color={{base: "black", _dark: "white"}}>List Mahasiswa</Text>
             </Link>
             <Link href=''>
-            <Text color={{base: "black", _dark: "white"}}>Akun</Text>
-            </Link>
-            <Link href=''>
-            <Text color={{base: "black", _dark: "white"}}>Asisten</Text>
+            <Text color={{base: "black", _dark: "white"}}>Administrasi</Text>
             </Link>
         </HStack>
 

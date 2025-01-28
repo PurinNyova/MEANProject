@@ -1,0 +1,38 @@
+body {
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Style the navigation list */
+nav {
+    list-style: none; /* Remove bullet points */
+    padding: 0;
+    margin: 0;
+    display: flex; /* Display items horizontally */
+    align-items: center;
+    background-color: darkgray;
+  }
+
+nav ul {
+  padding: 0;
+  width: 25vw;
+}
+  
+  /* Style the navigation list items */
+nav li {
+  display: inline;
+  margin: 0 10px; /* Add spacing between items */
+  transition: 0.5s;
+  }
+
+nav li:hover {
+  background-color: green;
+  color: white;
+  border-radius: 10px;
+  padding: 1%;
+}
