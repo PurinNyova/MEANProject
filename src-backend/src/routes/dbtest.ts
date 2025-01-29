@@ -23,7 +23,7 @@ interface UserInput {
 router.get("/", async (request: Request, response: Response) => {
     try {
         const queriedUser = await UserSchema.find({});
-        console.log(queriedUser)
+        console.log("Main dbRoute Call")
         response.status(200).json({success: true, ...queriedUser})
     } catch (error: any) {
         console.log("Error detected in dbtest get root", error.message)
@@ -33,12 +33,25 @@ router.get("/", async (request: Request, response: Response) => {
 })
 
 
-router.get("/:test", (request: Request, response: Response) => {
-    const testParam = request.params.test
-    
-    response.json({
-        response: `Welcome anonymous. Test Param ${testParam}` 
-    })
+router.get("/:param", async (request: Request, response: Response) => {
+    const paramField = request.params.param;
+    const queryValue = request.query.value
+
+    if (!queryValue) {
+        response.status(400).json({ success: false, message: "Query value is required" });
+    }
+
+    try {
+        const query: any = {};
+        // Using regex for approximate, case-insensitive, partial match
+        query[paramField] = { $regex: new RegExp(queryValue as string, 'i') }; 
+        const queriedUser = await UserSchema.find(query);
+        console.log(queriedUser);
+        response.status(200).json({ success: true, ...queriedUser });
+    } catch (error: any) {
+        console.log("Error detected in dbtest get param", error.message);
+        response.status(500).json({ success: false, message: "Internal server error" });
+    }
 })
 
 router.post("/", async (request: Request, response: Response) => {

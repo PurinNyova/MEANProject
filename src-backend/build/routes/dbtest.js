@@ -9,7 +9,7 @@ const router = (0, express_1.Router)();
 router.get("/", async (request, response) => {
     try {
         const queriedUser = await user_model_1.default.find({});
-        console.log(queriedUser);
+        console.log("Main dbRoute Call");
         response.status(200).json({ success: true, ...queriedUser });
     }
     catch (error) {
@@ -17,11 +17,24 @@ router.get("/", async (request, response) => {
         response.status(500).json({ success: false, message: "Internal server error" });
     }
 });
-router.get("/:test", (request, response) => {
-    const testParam = request.params.test;
-    response.json({
-        response: `Welcome anonymous. Test Param ${testParam}`
-    });
+router.get("/:param", async (request, response) => {
+    const paramField = request.params.param;
+    const queryValue = request.query.value;
+    if (!queryValue) {
+        response.status(400).json({ success: false, message: "Query value is required" });
+    }
+    try {
+        const query = {};
+        // Using regex for approximate, case-insensitive, partial match
+        query[paramField] = { $regex: new RegExp(queryValue, 'i') };
+        const queriedUser = await user_model_1.default.find(query);
+        console.log(queriedUser);
+        response.status(200).json({ success: true, ...queriedUser });
+    }
+    catch (error) {
+        console.log("Error detected in dbtest get param", error.message);
+        response.status(500).json({ success: false, message: "Internal server error" });
+    }
 });
 router.post("/", async (request, response) => {
     const user = request.body;

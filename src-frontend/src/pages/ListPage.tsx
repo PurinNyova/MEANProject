@@ -1,21 +1,28 @@
-import { Box, Button, Container, Flex, For, Group, Input, MenuContent, MenuItem, MenuRoot, MenuTrigger, Table, Text } from '@chakra-ui/react'
+import { Box, Button, Container, Flex, For, Group, Input, Link, MenuContent, MenuItem, MenuRoot, MenuSelectionDetails, MenuTrigger, Table, Text } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 
+interface DomainSelectProps {
+  onSelectValue: (value: string) => void;
+}
 
-
-const DomainSelect = () => {
+const DomainSelect: React.FC<DomainSelectProps> = ({onSelectValue}) => {
 
   const [buttonText, setButtonText] = useState("Name");
 
+  const handleSelect = (details: MenuSelectionDetails) => {
+    setButtonText(details.value)
+    onSelectValue(details.value)
+  }
+
   return (
-  <MenuRoot positioning={{placement: "left"}} onSelect={(details) => {setButtonText(details.value)}}>
+  <MenuRoot positioning={{placement: "left"}} onSelect={handleSelect}>
       <MenuTrigger asChild>
-        <Button variant="outline" size="sm">
+        <Button variant="solid" size="sm" bg={"black"} color={"white"}>
           {buttonText}
         </Button>
       </MenuTrigger>
       <MenuContent>
-        <MenuItem value="nama">Nama</MenuItem>
+        <MenuItem value="name">Nama</MenuItem>
         <MenuItem value="npm">NPM</MenuItem>
         <MenuItem value="kelas">Kelas</MenuItem>
         <MenuItem value="jurusan">Jurusan</MenuItem>
@@ -25,7 +32,7 @@ const DomainSelect = () => {
   )
 }
 
-type User = {
+interface User {
   _id: string;
   name: string;
   npm: number;
@@ -52,30 +59,48 @@ type ApiResponse = {
 
 const ListPage: React.FC = () => {
   const [userDatabase, setUserDatabase] = useState<User[]>([]);
+  const [query, setQuery] = useState("")
+  const [selectedParam, setSelectedParam] = useState("name")
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:3001/api/db/");
-        const data: ApiResponse = await response.json();
-
-        if (data.success) {
-          // Extract user objects, ignore the 'success' field
-          const users = Object.values(data).filter(
-            (item): item is User => typeof item === "object"
-          );
-          setUserDatabase(users);
-        } else {
-          console.error("API returned an error or success is false.");
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
+  const fetchData = async (param?: string, queryValue?: string) => {
+    try {
+      let url = "http://localhost:3001/api/db/";
+      if (param && queryValue) {
+        url += `${param}?value=${queryValue}`;
       }
-    };
+      const response = await fetch(url);
+      const data: ApiResponse = await response.json();
 
+      if (data.success) {
+        const users = Object.values(data).filter(
+          (item): item is User => typeof item === "object" );
+        setUserDatabase(users); // Assuming 'data' is the array of users
+      } else {
+        console.error("API returned an error or success is false.");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  // Initial fetch
+  useEffect(() => {
     fetchData();
   }, []);
 
+  // Example function to handle search
+  const handleSearch = (event: React.FormEvent) => {
+    event.preventDefault()
+    // Assuming you set the `param` and `query` values from some input elements
+    const param = selectedParam; // example param
+    const queryValue = query; // using state for the query value
+    fetchData(param, queryValue);
+  }
+  
+
+  const formStyle: React.CSSProperties = {
+    // Your style properties here
+    width: "100%"
+  }
 
   return (
     <Container maxW={"90vw"} px={4} py={{base: "100px", sm:"50px"}}>
@@ -94,26 +119,28 @@ const ListPage: React.FC = () => {
         Here you can see all currently enrolled students
         </Text>
 
-        <Box
-        overflow={"visible"}
-        w={{base:"100%", md:"50%"}} h={{base:"40px", md:"50px"}} pl={"10px"}
-        backgroundColor={"white"} borderRadius={"20px"}
-        display={"inline-flex"} alignItems={"center"}>
+        <form onSubmit={handleSearch} style={formStyle}>
+          <Box
+          overflow={"visible"}
+          w={{base:"100%", md:"50%"}} h={{base:"40px", md:"50px"}} pl={"10px"}
+          backgroundColor={"white"} borderRadius={"20px"}
+          display={"inline-flex"} alignItems={"center"}>
           
-          <Group attached w={"70%"}>
-            <Input placeholder='Query' w={"100%"} unstyled h={"95%"} background={"none"} focusRingColor={"none"}/>
-            <DomainSelect />
-          </Group>
+            <Group attached w={"70%"}>
+              <Input placeholder='Query' w={"100%"} unstyled h={"95%"} background={"none"} focusRingColor={"none"} onChange={(data) => setQuery(data.target.value)}/>
+              <DomainSelect onSelectValue={setSelectedParam}/>
+            </Group>
           
-          <Button background={"purple.400"} ml={"2%"} h={"100%"} w={"30%"}>Find</Button>
-        </Box>
+            <Button background={"purple.400"} ml={"2%"} h={"100%"} w={"30%"} type="submit">Find</Button>
+          </Box>
+        </form>
       </Flex>
 
       <Table.ScrollArea borderWidth="1px" w={"100%"} mt={"40px"}>
         <Table.Root size="md">
           <Table.Header>
             <Table.Row>
-              <For each={["No","name", "npm", "kelas", "jurusan", "lokasiKampus", "tempatTanggalLahir", "kelamin", "alamat", "noHP", "email", "posisi", "lastIPK", "Document"]}>
+              <For each={["No","Nama", "NPM", "Kelas", "Jurusan", "Lokasi Kampus", "Tempat Tanggal Lahir", "Kelamin", "Alamat", "No HP", "Email", "Posisi", "IPK", "Document"]}>
                 {(header, index) => <Table.ColumnHeader key={index}>{header}</Table.ColumnHeader>}
               </For>
             </Table.Row>
@@ -134,7 +161,13 @@ const ListPage: React.FC = () => {
                 <Table.Cell>{item.email}</Table.Cell>
                 <Table.Cell>{item.posisi}</Table.Cell>
                 <Table.Cell>{item.lastIPK}</Table.Cell>
-                <Table.Cell>{item.Document}</Table.Cell>
+                <Table.Cell>
+                  {item.Document !== "no documents" ? (
+                    <Link href={`/api/cdn/${item.Document}`}>
+                      <Button bg="purple.400">File</Button>
+                    </Link>
+                  ) : item.Document}
+                </Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>
