@@ -1,5 +1,6 @@
 import { Box, Button, Container, Flex, For, Group, Input, Link, MenuContent, MenuItem, MenuRoot, MenuSelectionDetails, MenuTrigger, Table, Text } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
+import { useLocation, useParams } from 'react-router-dom';
 
 interface DomainSelectProps {
   onSelectValue: (value: string) => void;
@@ -57,7 +58,11 @@ type ApiResponse = {
   success: boolean;
 };
 
+
 const ListPage: React.FC = () => {
+  const { param } = useParams();
+  const queries = new URLSearchParams(useLocation().search);
+  const value = queries.get('value')?.toString();
   const [userDatabase, setUserDatabase] = useState<User[]>([]);
   const [query, setQuery] = useState("")
   const [selectedParam, setSelectedParam] = useState("name")
@@ -84,7 +89,9 @@ const ListPage: React.FC = () => {
   };
   // Initial fetch
   useEffect(() => {
-    fetchData();
+    if (param && value) {
+      fetchData(param, value)
+    } else {fetchData()}
   }, []);
 
   // Example function to handle search
@@ -127,7 +134,7 @@ const ListPage: React.FC = () => {
           display={"inline-flex"} alignItems={"center"}>
           
             <Group attached w={"70%"}>
-              <Input placeholder='Query' w={"100%"} unstyled h={"95%"} background={"none"} focusRingColor={"none"} onChange={(data) => setQuery(data.target.value)}/>
+              <Input placeholder='Query' w={"100%"} unstyled h={"95%"} background={"none"} focusRingColor={"none"} onChange={(data) => {setQuery(data.target.value); handleSearch(data)}}/>
               <DomainSelect onSelectValue={setSelectedParam}/>
             </Group>
           

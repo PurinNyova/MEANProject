@@ -39,6 +39,7 @@ router.get("/:param", async (request: Request, response: Response) => {
 
     if (!queryValue) {
         response.status(400).json({ success: false, message: "Query value is required" });
+        return
     }
 
     try {

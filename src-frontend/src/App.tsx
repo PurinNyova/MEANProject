@@ -7,6 +7,7 @@ import HomePage from "./pages/HomePage";
 import Navbar from "./components/navbar";
 import AboutPage from "./pages/AboutPage";
 import ListPage from "./pages/ListPage";
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
 
@@ -21,6 +22,8 @@ function App() {
       <Route path='/' element={<HomePage />} />
       <Route path='/about' element={<AboutPage />} />
       <Route path='/list' element={<ListPage />}/>
+      <Route path='/list/:param' element={<ListPage />}/>
+      <Route path='/register' element={<RegisterPage />}/>
      </Routes>
     </Box>
   )

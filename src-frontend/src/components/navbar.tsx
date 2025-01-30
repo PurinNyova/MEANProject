@@ -28,13 +28,13 @@ const navbar = () => {
         </Text>
 
         <HStack justifyContent={"space-evenly"} minW={"50%"} hideBelow={"md"} fontWeight={"bold"}>
-            <Link href=''>
+            <Link href='/register'>
             <Text color={{base: "black", _dark: "white"}}>Pendaftaran</Text>
             </Link>
             <Link href='/list'>
             <Text color={{base: "black", _dark: "white"}}>List Mahasiswa</Text>
             </Link>
-            <Link href=''>
+            <Link href='/admin'>
             <Text color={{base: "black", _dark: "white"}}>Administrasi</Text>
             </Link>
         </HStack>

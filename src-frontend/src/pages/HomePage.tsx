@@ -1,7 +1,12 @@
 import { Box, Button, Container, Flex, Input, Text } from '@chakra-ui/react'
 import { Cards1, Cards2, Cards3 } from '../components/cards'
+import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 
 const HomePage = () => {
+  const navigate = useNavigate();
+  const [query, setQuery] = useState("");
+
   return (
     <Container maxW={"90vw"} px={4} py={{base: "100px", sm:"50px"}}>
       <Flex
@@ -24,8 +29,8 @@ const HomePage = () => {
         w={"50%"} h={"50px"} pl={"10px"}
         backgroundColor={"white"} borderRadius={"20px"}
         display={"inline-flex"} alignItems={"center"}>
-          <Input placeholder='Student Name' w={"70%"} unstyled h={"95%"} background={"none"}/>
-          <Button background={"purple.400"} ml={"2%"} h={"100%"} w={"30%"}>Submit</Button>
+          <Input placeholder='Student Name' w={"70%"} unstyled h={"95%"} background={"none"} onChange={(data) => setQuery(data.target.value)}/>
+          <Button background={"purple.400"} ml={"2%"} h={"100%"} w={"30%"} onClick={() => {navigate(`/list/name?value=${query}`)}}>Submit</Button>
         </Box>
 
         <Flex justifyContent={"space-between"} w={"100%"} mt={"30px"} direction={{ base: "column", md: "row" }}>

@@ -22,6 +22,7 @@ router.get("/:param", async (request, response) => {
     const queryValue = request.query.value;
     if (!queryValue) {
         response.status(400).json({ success: false, message: "Query value is required" });
+        return;
     }
     try {
         const query = {};
