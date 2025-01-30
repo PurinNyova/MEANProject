@@ -33,7 +33,7 @@ const DomainSelect: React.FC<DomainSelectProps> = ({onSelectValue}) => {
   )
 }
 
-interface User {
+export interface UserData {
   _id: string;
   name: string;
   npm: number;
@@ -54,16 +54,20 @@ interface User {
 };
 
 type ApiResponse = {
-  [key: string]: User | boolean; // Users keyed by string indices and `success` boolean
+  [key: string]: UserData | boolean; // Users keyed by string indices and `success` boolean
   success: boolean;
 };
 
+export const formStyle: React.CSSProperties = {
+  // Your style properties here
+  width: "100%"
+}
 
 const ListPage: React.FC = () => {
   const { param } = useParams();
   const queries = new URLSearchParams(useLocation().search);
   const value = queries.get('value')?.toString();
-  const [userDatabase, setUserDatabase] = useState<User[]>([]);
+  const [userDatabase, setUserDatabase] = useState<UserData[]>([]);
   const [query, setQuery] = useState("")
   const [selectedParam, setSelectedParam] = useState("name")
 
@@ -78,7 +82,7 @@ const ListPage: React.FC = () => {
 
       if (data.success) {
         const users = Object.values(data).filter(
-          (item): item is User => typeof item === "object" );
+          (item): item is UserData => typeof item === "object" );
         setUserDatabase(users); // Assuming 'data' is the array of users
       } else {
         console.error("API returned an error or success is false.");
@@ -103,11 +107,6 @@ const ListPage: React.FC = () => {
     fetchData(param, queryValue);
   }
   
-
-  const formStyle: React.CSSProperties = {
-    // Your style properties here
-    width: "100%"
-  }
 
   return (
     <Container maxW={"90vw"} px={4} py={{base: "100px", sm:"50px"}}>
@@ -134,7 +133,10 @@ const ListPage: React.FC = () => {
           display={"inline-flex"} alignItems={"center"}>
           
             <Group attached w={"70%"}>
-              <Input placeholder='Query' w={"100%"} unstyled h={"95%"} background={"none"} focusRingColor={"none"} onChange={(data) => {setQuery(data.target.value); handleSearch(data)}}/>
+              <Input placeholder='Query'
+              w={"100%"} unstyled h={"95%"} background={"none"} focusRingColor={"none"}
+              color={"black"}
+              onChange={(data) => {setQuery(data.target.value); handleSearch(data)}}/>
               <DomainSelect onSelectValue={setSelectedParam}/>
             </Group>
           
@@ -153,7 +155,7 @@ const ListPage: React.FC = () => {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {userDatabase.map((item: User, index: number) => (
+            {userDatabase.map((item: UserData, index: number) => (
               <Table.Row key={item._id}>
                 <Table.Cell>{index + 1}</Table.Cell>
                 <Table.Cell>{item.name}</Table.Cell>

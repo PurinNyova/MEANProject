@@ -26,17 +26,14 @@ const SideBar: React.FC = () => {
         </DrawerHeader>
         <DrawerBody>
             <Stack justifyContent={"space-evenly"} minW={"50%"} fontWeight={"bold"} separator={<StackSeparator />}>
-                <Link href=''>
+                <Link href='/register'>
                 <Text color={{base: "black", _dark: "white"}}>Pendaftaran</Text>
                 </Link>
                 <Link href='/list'>
                 <Text color={{base: "black", _dark: "white"}}>List Mahasiswa</Text>
                 </Link>
-                <Link href=''>
-                <Text color={{base: "black", _dark: "white"}}>Akun</Text>
-                </Link>
-                <Link href=''>
-                <Text color={{base: "black", _dark: "white"}}>Asisten</Text>
+                <Link href='/admin'>
+                <Text color={{base: "black", _dark: "white"}}>Administrasi</Text>
                 </Link>
             </Stack>
         </DrawerBody>
