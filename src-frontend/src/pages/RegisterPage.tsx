@@ -208,7 +208,7 @@ const RegisterPage = () => {
                         <FileUploadRoot maxW="100%" alignItems="stretch" maxFiles={10}>
                             <FileUploadDropzone
                                 label="Drag and drop here to upload"
-                                description=".png, .jpg up to 5MB"
+                                description=".pdf up to 5MB"
                             />
                             <FileUploadList />
                         </FileUploadRoot>
