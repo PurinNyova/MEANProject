@@ -23,6 +23,7 @@ const navbar = () => {
         textTransform={"uppercase"}
         textAlign={"center"}
         color={{base: "black", _dark: "white"}}
+        hideBelow={"40em"}
         >
         Universitas Gunadarma
         </Text>

@@ -1,11 +1,13 @@
 import { Container, Flex, Text, Box, Input, Button,
     Fieldset, Stack, SelectRoot, createListCollection, SelectTrigger,
-    SelectValueText, SelectContent, SelectItem, NumberInputRoot } from '@chakra-ui/react';
+    SelectValueText, SelectContent, SelectItem, NumberInputRoot, 
+    FileUploadRoot} from '@chakra-ui/react';
 import { formStyle } from './ListPage';
 import { Field } from '../components/ui/field';
 import { UserData } from './ListPage';
 import { useState } from 'react';
 import { NumberInputField } from '../components/ui/number-input';
+import { FileUploadDropzone, FileUploadList } from '../components/ui/file-upload';
 
 const RegisterPage = () => {
     const locations = createListCollection({
@@ -200,6 +202,16 @@ const RegisterPage = () => {
                             </SelectContent>
                         </SelectRoot>
                     </Box>
+                    </Field>
+
+                    <Field label="Upload Dokumen">
+                        <FileUploadRoot maxW="100%" alignItems="stretch" maxFiles={10}>
+                            <FileUploadDropzone
+                                label="Drag and drop here to upload"
+                                description=".png, .jpg up to 5MB"
+                            />
+                            <FileUploadList />
+                        </FileUploadRoot>
                     </Field>
                 </Fieldset.Content>
 
