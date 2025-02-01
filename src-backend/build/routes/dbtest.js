@@ -19,7 +19,7 @@ const storage = multer_1.default.diskStorage({
         cb(null, dir);
     },
     filename: function (req, file, cb) {
-        req.body.files = path_1.default.join('uploads', req.body.name);
+        req.body.files = 'uploads/' + req.body.npm;
         cb(null, file.originalname);
     }
 });
