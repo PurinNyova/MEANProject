@@ -24,7 +24,7 @@ interface UserInput {
 
 const storage = multer.diskStorage({
   destination: function (request, file, cb) {
-    const dir = path.join('uploads', request.body.name);
+    const dir = path.join('uploads', request.body.npm);
 
     // Check if the directory exists, if not create it
     if (!fs.existsSync(dir)) {

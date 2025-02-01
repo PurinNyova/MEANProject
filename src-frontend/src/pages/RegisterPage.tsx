@@ -48,7 +48,7 @@ const RegisterPage = () => {
         email: "",
         posisi: "",
         lastIPK: 0,
-        Document: ""
+        files: ""
     });
     
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -192,8 +192,8 @@ const RegisterPage = () => {
 
                     <Field label="IPK Terakhir">
 
-                    <NumberInputRoot defaultValue="0" step={0.01} name='lastIPK' w={"100%"} unstyled h={"50px"}
-                        focusRingColor={"none"} pl={"10px"} display={"flex"} overflow={"hidden"}
+                    <NumberInputRoot defaultValue="4.0" step={0.01} name='lastIPK' w={"100%"} unstyled h={"50px"}
+                        focusRingColor={"none"} pl={"10px"} display={"flex"} overflow={"hidden"} formatOptions={{style: "decimal"}}
                         backgroundColor={"white"} borderRadius={"20px"}>
                         <NumberInputField bg={"transparent"} focusVisibleRing={"none"} color={"black"} w={"100%"} onChange={handleInputChange}/>
                     </NumberInputRoot>

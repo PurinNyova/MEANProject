@@ -47,7 +47,7 @@ export type UserData = {
   email: string;
   posisi: string;
   lastIPK: number;
-  Document: string | File[]
+  files: string | File[];
   createdAt?: string;
   updatedAt?: string;
   __v?: number;
@@ -171,11 +171,11 @@ const ListPage: React.FC = () => {
                 <Table.Cell>{item.posisi}</Table.Cell>
                 <Table.Cell>{item.lastIPK}</Table.Cell>
                 <Table.Cell>
-                  {item.Document !== "no documents" ? (
-                    <Link href={`/api/cdn/${item.Document}`}>
+                  {item.files !== "no documents" ? (
+                    <Link href={`/api/cdn/${item.files}`}>
                       <Button bg="purple.400">File</Button>
                     </Link>
-                  ) : item.Document}
+                  ) : item.files}
                 </Table.Cell>
               </Table.Row>
             ))}
