@@ -33,8 +33,8 @@ const DomainSelect: React.FC<DomainSelectProps> = ({onSelectValue}) => {
   )
 }
 
-export interface UserData {
-  _id: string;
+export type UserData = {
+  _id?: string;
   name: string;
   npm: number;
   kelas: string;
@@ -47,13 +47,13 @@ export interface UserData {
   email: string;
   posisi: string;
   lastIPK: number;
-  Document: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
+  Document: string | File[]
+  createdAt?: string;
+  updatedAt?: string;
+  __v?: number;
 };
 
-type ApiResponse = {
+export type ApiResponse = {
   [key: string]: UserData | boolean; // Users keyed by string indices and `success` boolean
   success: boolean;
 };

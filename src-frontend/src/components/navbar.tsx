@@ -25,18 +25,18 @@ const navbar = () => {
         color={{base: "black", _dark: "white"}}
         hideBelow={"40em"}
         >
-        Universitas Gunadarma
+        Placeholder
         </Text>
 
         <HStack justifyContent={"space-evenly"} minW={"50%"} hideBelow={"md"} fontWeight={"bold"}>
             <Link href='/register'>
-            <Text color={{base: "black", _dark: "white"}}>Pendaftaran</Text>
+            <Text color={{base: "black", _dark: "white"}}>Registration</Text>
             </Link>
             <Link href='/list'>
-            <Text color={{base: "black", _dark: "white"}}>List Mahasiswa</Text>
+            <Text color={{base: "black", _dark: "white"}}>List</Text>
             </Link>
-            <Link href='/admin'>
-            <Text color={{base: "black", _dark: "white"}}>Administrasi</Text>
+            <Link href='/login'>
+            <Text color={{base: "black", _dark: "white"}}>Admin</Text>
             </Link>
         </HStack>
 

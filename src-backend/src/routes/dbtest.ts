@@ -1,6 +1,8 @@
 import { Request, Response, Router } from "express";
-import documentSchema from "../models/file.model";
+import fs from 'fs'
 import UserSchema from "../models/user.model";
+import multer from 'multer'
+import path from "path";
 
 const router = Router();
 
@@ -17,9 +19,28 @@ interface UserInput {
     email: string;
     posisi: string;
     lastIPK: string;
-    Document?: string;
+    files?: File[];
   }
+
+const storage = multer.diskStorage({
+  destination: function (request, file, cb) {
+    const dir = path.join('uploads', request.body.name);
+
+    // Check if the directory exists, if not create it
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+
+    cb(null, dir);
+  },
+  filename: function (req, file, cb) {
+    req.body.files = 'uploads/'+req.body.npm
+    cb(null, file.originalname);
+  }
+});
   
+const upload = multer({ storage: storage })
+
 router.get("/", async (request: Request, response: Response) => {
     try {
         const queriedUser = await UserSchema.find({});
@@ -55,15 +76,17 @@ router.get("/:param", async (request: Request, response: Response) => {
     }
 })
 
-router.post("/", async (request: Request, response: Response) => {
+router.post("/", upload.array('files'), async (request: Request, response: Response) => {
     const user: UserInput= request.body
+    console.log(user)
 
-    if (!user.name || !user.email || !user.npm || !user.kelas || !user.jurusan || !user.lokasiKampus || !user.tempatTanggalLahir || !user.kelamin || !user.alamat || !user.noHP || !user.email || !user.posisi || !user.lastIPK) {
+    if (!user.name || !user.email || !user.npm || !user.kelas || !user.jurusan || !user.lokasiKampus || !user.tempatTanggalLahir || !user.kelamin || !user.alamat || !user.noHP || !user.posisi || !user.lastIPK) {
         response.status(400).json({ response: 'Invalid Body: Is every required field populated?' });
+        return
     }
 
     const newUser = new UserSchema(user)
-    if (newUser.Document === undefined) {newUser.Document = "no documents"}
+    if (request.body.files === undefined) {newUser.files = "no documents"}
 
     try {
         await newUser.save();

@@ -49,7 +49,7 @@ const userDatabaseSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    Document: {
+    files: {
         type: String,
         required: false
     }

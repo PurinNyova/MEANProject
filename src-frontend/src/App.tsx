@@ -8,6 +8,7 @@ import Navbar from "./components/navbar";
 import AboutPage from "./pages/AboutPage";
 import ListPage from "./pages/ListPage";
 import RegisterPage from "./pages/RegisterPage";
+import LoginPage from "./pages/LoginPage";
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
       <Route path='/list' element={<ListPage />}/>
       <Route path='/list/:param' element={<ListPage />}/>
       <Route path='/register' element={<RegisterPage />}/>
+      <Route path='/login' element={<LoginPage />}/>
      </Routes>
     </Box>
   )

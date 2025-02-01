@@ -1,13 +1,16 @@
 import { Container, Flex, Text, Box, Input, Button,
     Fieldset, Stack, SelectRoot, createListCollection, SelectTrigger,
     SelectValueText, SelectContent, SelectItem, NumberInputRoot, 
-    FileUploadRoot} from '@chakra-ui/react';
+    FileUploadRoot,
+    FileUploadClearTrigger,} from '@chakra-ui/react';
 import { formStyle } from './ListPage';
 import { Field } from '../components/ui/field';
 import { UserData } from './ListPage';
 import { useState } from 'react';
 import { NumberInputField } from '../components/ui/number-input';
 import { FileUploadDropzone, FileUploadList } from '../components/ui/file-upload';
+import { ApiResponse } from './ListPage';
+import { CloseButton } from '../components/ui/close-button';
 
 const RegisterPage = () => {
     const locations = createListCollection({
@@ -25,8 +28,14 @@ const RegisterPage = () => {
         ],
       })
 
+      const kelamins = createListCollection({
+        items: [
+          { label: "Male", value: "male" },
+          { label: "Female", value: "female" },
+        ],
+      })
+
     const [userData, setUserData] = useState<UserData>({
-        _id: "",
         name: "",
         npm: 0,
         kelas: "",
@@ -39,10 +48,7 @@ const RegisterPage = () => {
         email: "",
         posisi: "",
         lastIPK: 0,
-        Document: "",
-        createdAt: "",
-        updatedAt: "",
-        __v: 0
+        Document: ""
     });
     
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,6 +58,49 @@ const RegisterPage = () => {
             [name]: value
         }));
     };
+
+    const handleSubmitForm = (data: UserData) => {  
+        let formData = new FormData();
+        for (const key in data) {
+            console.log(key)
+            if (data.hasOwnProperty(key)) {
+              const dataKey = key as keyof UserData; // Use keyof operator
+              if (Array.isArray(data[dataKey])) {
+                (data[dataKey] as File[]).forEach((file) => {
+                    formData.append('files', file);
+                });
+              } else {
+                const value = data[dataKey]?.toString() || '';
+                formData.append(key, value);
+              }
+            }
+        }
+        for (var pair of formData.entries()) {
+            console.log(pair[0]+ ', ' + pair[1]); 
+        }
+
+        const submission = async () => {
+         try {
+              let url = "http://localhost:3001/api/db/";
+              const response = await fetch(url, {
+                method: 'POST',
+                body: formData
+              });
+              const data: ApiResponse = await response.json();
+        
+              if (data.success) {
+                alert("Upload Successful")
+              } else {
+                console.error("API returned an error or success is false.");
+              }
+            } catch (error) {
+              console.error("Error fetching data:", error);
+            }
+        }
+        submission()
+
+
+    }
 
     return (
       <Container maxW={"90vw"} px={4} py={{base: "100px", sm:"50px"}}>
@@ -108,6 +157,29 @@ const RegisterPage = () => {
 
                     </Field>
 
+                    <Field label="Posisi">              
+
+                    <Box w={"100%"} overflow={"visible"} h={"50px"}>
+                        <SelectRoot w={"100%"}
+                        name={"kelamin"} collection={kelamins}
+                        onValueChange={(data) => setUserData(prevState => ({
+                            ...prevState,
+                            ["kelamin"]: data.value.toString()
+                        }))}>
+                            <SelectTrigger w={"100%"} backgroundColor={"white"} borderRadius={"20px"}>
+                                <SelectValueText color={"black"} placeholder="Kelamin" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {kelamins.items.map((position) => (
+                                <SelectItem item={position} key={position.value}>
+                                    {position.label}
+                                </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </SelectRoot>
+                    </Box>
+                    </Field>
+
                     <Field label="No HP">
 
                     <NumberInputRoot defaultValue="0" step={1} name='noHP' w={"100%"} unstyled h={"50px"}
@@ -153,21 +225,22 @@ const RegisterPage = () => {
                     </Field>
 
                     <Field label="Email address">
-                        <Input placeholder='Email Address' w={"100%"} unstyled h={"50px"}
+                        <Input name='email' placeholder='Email Address' w={"100%"} unstyled h={"50px"}
                         focusRingColor={"none"} pl={"10px"} color={"black"}
-                        backgroundColor={"white"} borderRadius={"20px"}/>
+                        backgroundColor={"white"} borderRadius={"20px"}
+                        onChange={handleInputChange}    />
                     </Field>
 
                     <Field label="Lokasi Kampus">              
 
                         <Box w={"100%"} overflow={"visible"} h={"50px"}>
-                            <SelectRoot w={"100%"} h={"100%"}
+                            <SelectRoot w={"100%"}
                             name={"lokasiKampus"} collection={locations}
                             onValueChange={(data) => setUserData(prevState => ({
                                 ...prevState,
                                 ["lokasiKampus"]: data.value.toString()
                             }))}>
-                                <SelectTrigger w={"100%"} h={"100%"} backgroundColor={"white"} borderRadius={"20px"}>
+                                <SelectTrigger w={"100%"} backgroundColor={"white"} borderRadius={"20px"}>
                                     <SelectValueText color={"black"} placeholder="Lokasi" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -184,13 +257,13 @@ const RegisterPage = () => {
                     <Field label="Posisi">              
 
                     <Box w={"100%"} overflow={"visible"} h={"50px"}>
-                        <SelectRoot w={"100%"} h={"100%"}
+                        <SelectRoot w={"100%"}
                         name={"posisi"} collection={positions}
                         onValueChange={(data) => setUserData(prevState => ({
                             ...prevState,
                             ["posisi"]: data.value.toString()
                         }))}>
-                            <SelectTrigger w={"100%"} h={"100%"} backgroundColor={"white"} borderRadius={"20px"}>
+                            <SelectTrigger w={"100%"} backgroundColor={"white"} borderRadius={"20px"}>
                                 <SelectValueText color={"black"} placeholder="Posisi" />
                             </SelectTrigger>
                             <SelectContent>
@@ -205,18 +278,34 @@ const RegisterPage = () => {
                     </Field>
 
                     <Field label="Upload Dokumen">
-                        <FileUploadRoot maxW="100%" alignItems="stretch" maxFiles={10}>
+                        <FileUploadRoot maxW="100%" alignItems="stretch" maxFiles={10} accept={"application/pdf"}
+                        onFileAccept={(data) => setUserData(prevState => ({
+                            ...prevState,
+                            ["Document"]: data.files
+                        }))}>
                             <FileUploadDropzone
+                                
                                 label="Drag and drop here to upload"
                                 description=".pdf up to 5MB"
                             />
-                            <FileUploadList />
+                            <FileUploadList/>
+                            <FileUploadClearTrigger asChild>
+                                <CloseButton
+                                me="-1"
+                                size="xs"
+                                variant="plain"
+                                focusVisibleRing="inside"
+                                focusRingWidth="2px"
+                                pointerEvents="auto"
+                                color="fg.subtle"
+                                />
+                            </FileUploadClearTrigger>
                         </FileUploadRoot>
                     </Field>
                 </Fieldset.Content>
 
-                <Button background={"purple.400"} h={"50px"} w={"100%"} color={{base:"white", _dark:"black"}}
-                onClick={() => alert(Object.values(userData).toString())}>Register</Button>
+                <Button background={{base:"purple.400", _dark:"white"}} h={"50px"} w={"100%"} color={{base:"white", _dark:"black"}}
+                onClick={() => {handleSubmitForm(userData); console.log(userData)}}>Register</Button>
                 </Fieldset.Root>
           </form>
         </Flex>

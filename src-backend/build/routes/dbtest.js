@@ -4,8 +4,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+const fs_1 = __importDefault(require("fs"));
 const user_model_1 = __importDefault(require("../models/user.model"));
+const multer_1 = __importDefault(require("multer"));
+const path_1 = __importDefault(require("path"));
 const router = (0, express_1.Router)();
+const storage = multer_1.default.diskStorage({
+    destination: function (request, file, cb) {
+        const dir = path_1.default.join('uploads', request.body.name);
+        // Check if the directory exists, if not create it
+        if (!fs_1.default.existsSync(dir)) {
+            fs_1.default.mkdirSync(dir, { recursive: true });
+        }
+        cb(null, dir);
+    },
+    filename: function (req, file, cb) {
+        req.body.files = path_1.default.join('uploads', req.body.name);
+        cb(null, file.originalname);
+    }
+});
+const upload = (0, multer_1.default)({ storage: storage });
 router.get("/", async (request, response) => {
     try {
         const queriedUser = await user_model_1.default.find({});
@@ -37,14 +55,16 @@ router.get("/:param", async (request, response) => {
         response.status(500).json({ success: false, message: "Internal server error" });
     }
 });
-router.post("/", async (request, response) => {
+router.post("/", upload.array('files'), async (request, response) => {
     const user = request.body;
-    if (!user.name || !user.email || !user.npm || !user.kelas || !user.jurusan || !user.lokasiKampus || !user.tempatTanggalLahir || !user.kelamin || !user.alamat || !user.noHP || !user.email || !user.posisi || !user.lastIPK) {
+    console.log(user);
+    if (!user.name || !user.email || !user.npm || !user.kelas || !user.jurusan || !user.lokasiKampus || !user.tempatTanggalLahir || !user.kelamin || !user.alamat || !user.noHP || !user.posisi || !user.lastIPK) {
         response.status(400).json({ response: 'Invalid Body: Is every required field populated?' });
+        return;
     }
     const newUser = new user_model_1.default(user);
-    if (newUser.Document === undefined) {
-        newUser.Document = "no documents";
+    if (request.body.files === undefined) {
+        newUser.files = "no documents";
     }
     try {
         await newUser.save();

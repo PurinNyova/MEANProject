@@ -53,7 +53,7 @@ const userDatabaseSchema = new mongoose_1.default.Schema({
         type: Number,
         required: true
     },
-    Document: {
+    files: {
         type: String,
         required: false
     }
