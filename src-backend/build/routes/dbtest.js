@@ -11,7 +11,7 @@ const path_1 = __importDefault(require("path"));
 const router = (0, express_1.Router)();
 const storage = multer_1.default.diskStorage({
     destination: function (request, file, cb) {
-        const dir = path_1.default.join('uploads', request.body.name);
+        const dir = path_1.default.join('uploads', request.body.npm);
         // Check if the directory exists, if not create it
         if (!fs_1.default.existsSync(dir)) {
             fs_1.default.mkdirSync(dir, { recursive: true });
@@ -63,7 +63,7 @@ router.post("/", upload.array('files'), async (request, response) => {
         return;
     }
     const newUser = new user_model_1.default(user);
-    if (request.body.files === undefined) {
+    if (newUser.files === '') {
         newUser.files = "no documents";
     }
     try {

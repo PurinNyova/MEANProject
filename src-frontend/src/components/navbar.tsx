@@ -2,7 +2,12 @@ import { Button, Container, Flex, HStack, Link, Text } from '@chakra-ui/react';
 import { ColorModeButton } from './ui/color-mode';
 import SideBar from './sidebar';
 
-const navbar = () => {
+interface navSess {
+  sessionCheck?: boolean
+}
+
+const navbar: React.FC<navSess> = ({sessionCheck}) => {
+
   return (
     <Container maxW={"90vw"} px={4} paddingTop={"2vh"}>
         <Flex
@@ -35,8 +40,8 @@ const navbar = () => {
             <Link href='/list'>
             <Text color={{base: "black", _dark: "white"}}>List</Text>
             </Link>
-            <Link href='/login'>
-            <Text color={{base: "black", _dark: "white"}}>Admin</Text>
+            <Link href={sessionCheck ? '/dashboard' : '/login'}>
+            <Text color={{base: "black", _dark: "white"}}>{sessionCheck ? 'Dashboard' : 'Admin'}</Text>
             </Link>
         </HStack>
 

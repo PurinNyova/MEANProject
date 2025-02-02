@@ -86,7 +86,7 @@ router.post("/", upload.array('files'), async (request: Request, response: Respo
     }
 
     const newUser = new UserSchema(user)
-    if (request.body.files === undefined) {newUser.files = "no documents"}
+    if (newUser.files === '') {newUser.files = "no documents"}
 
     try {
         await newUser.save();

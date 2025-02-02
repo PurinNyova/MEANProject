@@ -1,32 +1,23 @@
-import { Text, Box, Button, Input, Flex, createListCollection, Fieldset, Stack, SelectRoot, SelectTrigger, SelectContent, SelectValueText, SelectItem } from '@chakra-ui/react'
+import { Text, Button, Input, Flex, Fieldset, Stack } from '@chakra-ui/react'
 import { Container } from '@chakra-ui/react/container'
 import { useState } from 'react'
-import { ApiResponse, formStyle } from './ListPage'
+import { formStyle } from './ListPage'
 import { Field } from '../components/ui/field';
+import { ApiResponse } from '../App';
 
 interface LoginInterface {
   name: string;
   email: string;
-  posisi: string;
   password: string;
 }
-
-const positions = createListCollection({
-  items: [
-    { label: "Asisten", value: "asisten" },
-    { label: "Programmer", value: "programmer" },
-  ],
-})
 
 const LoginPage = () => {
 
     const [loginInterface, setLoginInterface] = useState<LoginInterface>({
       name: "",
       email: "",
-      posisi: "",
       password: ""
     })
-
     
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -108,30 +99,6 @@ const LoginPage = () => {
                         focusRingColor={"none"} pl={"10px"} color={"black"}
                         backgroundColor={"white"} borderRadius={"20px"}
                         onChange={handleInputChange}/>
-                    </Field>
-
-                    
-                    <Field label="Posisi">              
-
-                    <Box w={"100%"} overflow={"visible"} h={"50px"}>
-                        <SelectRoot w={"100%"}
-                        name={"posisi"} collection={positions}
-                        onValueChange={(data) => {setLoginInterface(prevState => ({
-                            ...prevState,
-                            ["posisi"]: data.value.toString()
-                        }));console.log(loginInterface)}}>
-                            <SelectTrigger w={"100%"} backgroundColor={"white"} borderRadius={"20px"}>
-                                <SelectValueText color={"black"} placeholder="Posisi" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {positions.items.map((position) => (
-                                <SelectItem item={position} key={position.value}>
-                                    {position.label}
-                                </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </SelectRoot>
-                    </Box>
                     </Field>
 
                     <Field label="Password">

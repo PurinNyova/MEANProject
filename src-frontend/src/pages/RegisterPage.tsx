@@ -11,8 +11,15 @@ import { NumberInputField } from '../components/ui/number-input';
 import { FileUploadDropzone, FileUploadList } from '../components/ui/file-upload';
 import { ApiResponse } from './ListPage';
 import { CloseButton } from '../components/ui/close-button';
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 
 const RegisterPage = () => {
+    const HCKEY: string = import.meta.env.VITE_HC_SITE_KEY
+    console.log(HCKEY)
+
+    const [isHuman, setIsHuman] = useState<boolean>(false)
+    const [emptyField, setEmptyField] = useState<boolean | undefined>(false)
+
     const locations = createListCollection({
         items: [
           { label: "Kalimalang", value: "kalimalang" },
@@ -50,6 +57,17 @@ const RegisterPage = () => {
         lastIPK: 0,
         files: ""
     });
+
+    const checkObjKey = (obj: UserData, exceptions: String[]) => {
+        for (let key in obj) {
+        const dataKey = key as keyof UserData
+          if (!exceptions.includes(dataKey) && (obj[dataKey] === "" || obj[dataKey] === 0)) {
+            setEmptyField(true)
+            return false
+          }
+        }
+        return true
+      }
     
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -59,7 +77,19 @@ const RegisterPage = () => {
         }));
     };
 
-    const handleSubmitForm = (data: UserData) => {  
+    const handleSubmitForm = (data: UserData) => {
+
+        if (!checkObjKey(data, ['files'])) {
+            return
+        }
+
+        setEmptyField(false)
+
+        if (!isHuman) {
+            alert("Please solve the captcha")
+            return
+        }
+
         let formData = new FormData();
         for (const key in data) {
             console.log(key)
@@ -81,7 +111,7 @@ const RegisterPage = () => {
 
         const submission = async () => {
          try {
-              let url = "http://localhost:3001/api/db/";
+              let url = import.meta.env.VITE_PROXY;
               const response = await fetch(url, {
                 method: 'POST',
                 body: formData
@@ -98,8 +128,6 @@ const RegisterPage = () => {
             }
         }
         submission()
-
-
     }
 
     return (
@@ -131,7 +159,7 @@ const RegisterPage = () => {
                 </Stack>
 
                 <Fieldset.Content>
-                    <Field label="Nama">
+                    <Field required label="Nama" errorText="This field is required" invalid={(emptyField && userData.name !== "")}>
                         <Input color={"black"} name='name' placeholder='Nama' w={"100%"} unstyled h={"50px"}
                         focusRingColor={"none"} pl={"10px"}
                         backgroundColor={"white"} borderRadius={"20px"}
@@ -139,7 +167,7 @@ const RegisterPage = () => {
                         />
                     </Field>
 
-                    <Field label="Kelas">
+                    <Field required label="Kelas" invalid={(emptyField && userData.kelas !== "")} errorText="This field is required">
                         <Input name='kelas' placeholder='Kelas' w={"100%"} unstyled h={"50px"}
                         focusRingColor={"none"} pl={"10px"} color={"black"}
                         backgroundColor={"white"} borderRadius={"20px"}
@@ -147,7 +175,7 @@ const RegisterPage = () => {
                         />
                     </Field>
                     
-                    <Field label="NPM">
+                    <Field required label="NPM" invalid={(emptyField && userData.npm !== 0)} errorText="This field is required">
 
                     <NumberInputRoot defaultValue="0" step={1} name='npm' w={"100%"} unstyled h={"50px"}
                         focusRingColor={"none"} pl={"10px"} display={"flex"} overflow={"hidden"}
@@ -157,7 +185,7 @@ const RegisterPage = () => {
 
                     </Field>
 
-                    <Field label="Posisi">              
+                    <Field required label="Kelamin" invalid={(emptyField && userData.kelamin !== "")} errorText="This field is required">              
 
                     <Box w={"100%"} overflow={"visible"} h={"50px"}>
                         <SelectRoot w={"100%"}
@@ -180,7 +208,7 @@ const RegisterPage = () => {
                     </Box>
                     </Field>
 
-                    <Field label="No HP">
+                    <Field required label="No HP" invalid={(emptyField && userData.noHP !== 0)} errorText="This field is required">
 
                     <NumberInputRoot defaultValue="0" step={1} name='noHP' w={"100%"} unstyled h={"50px"}
                         focusRingColor={"none"} pl={"10px"} display={"flex"} overflow={"hidden"}
@@ -190,9 +218,9 @@ const RegisterPage = () => {
 
                     </Field>
 
-                    <Field label="IPK Terakhir">
+                    <Field required label="IPK Terakhir" invalid={(emptyField && userData.lastIPK !== 0)} errorText="This field is required">
 
-                    <NumberInputRoot defaultValue="4.0" step={0.01} name='lastIPK' w={"100%"} unstyled h={"50px"}
+                    <NumberInputRoot defaultValue="0" step={0.01} name='lastIPK' w={"100%"} unstyled h={"50px"}
                         focusRingColor={"none"} pl={"10px"} display={"flex"} overflow={"hidden"} formatOptions={{style: "decimal"}}
                         backgroundColor={"white"} borderRadius={"20px"}>
                         <NumberInputField bg={"transparent"} focusVisibleRing={"none"} color={"black"} w={"100%"} onChange={handleInputChange}/>
@@ -200,7 +228,7 @@ const RegisterPage = () => {
 
                     </Field>
 
-                    <Field label="Tempat Tanggal lahir (Tempat, 0 Bulan 0000)">
+                    <Field required label="Tempat Tanggal lahir (Tempat, 0 Bulan 0000)" invalid={(emptyField && userData.tempatTanggalLahir !== "")} errorText="This field is required">
                         <Input name='tempatTanggalLahir' placeholder='Tempat Tanggal Lahir' w={"100%"} unstyled h={"50px"}
                         focusRingColor={"none"} pl={"10px"} color={"black"}
                         backgroundColor={"white"} borderRadius={"20px"}
@@ -208,7 +236,7 @@ const RegisterPage = () => {
                         />
                     </Field>
 
-                    <Field label="Jurusan">
+                    <Field required label="Jurusan" invalid={(emptyField && userData.jurusan !== "")} errorText="This field is required">
                         <Input name='jurusan' placeholder='Jurusan' w={"100%"} unstyled h={"50px"}
                         focusRingColor={"none"} pl={"10px"} color={"black"}
                         backgroundColor={"white"} borderRadius={"20px"}
@@ -216,7 +244,7 @@ const RegisterPage = () => {
                         />
                     </Field>
 
-                    <Field label="Alamat">
+                    <Field required label="Alamat" invalid={(emptyField && userData.alamat !== "")} errorText="This field is required">
                         <Input name='alamat' placeholder='Alamat' w={"100%"} unstyled h={"50px"}
                         focusRingColor={"none"} pl={"10px"} color={"black"}
                         backgroundColor={"white"} borderRadius={"20px"}
@@ -224,14 +252,14 @@ const RegisterPage = () => {
                         />
                     </Field>
 
-                    <Field label="Email address">
+                    <Field required label="Email address" invalid={(emptyField && userData.email !== "")} errorText="This field is required">
                         <Input name='email' placeholder='Email Address' w={"100%"} unstyled h={"50px"}
                         focusRingColor={"none"} pl={"10px"} color={"black"}
                         backgroundColor={"white"} borderRadius={"20px"}
                         onChange={handleInputChange}    />
                     </Field>
 
-                    <Field label="Lokasi Kampus">              
+                    <Field required label="Lokasi Kampus" invalid={(emptyField && userData.lokasiKampus !== "")} errorText="This field is required">              
 
                         <Box w={"100%"} overflow={"visible"} h={"50px"}>
                             <SelectRoot w={"100%"}
@@ -254,7 +282,7 @@ const RegisterPage = () => {
                         </Box>
                     </Field>
                     
-                    <Field label="Posisi">              
+                    <Field required label="Posisi" invalid={(emptyField && userData.posisi !== "")} errorText="This field is required">              
 
                     <Box w={"100%"} overflow={"visible"} h={"50px"}>
                         <SelectRoot w={"100%"}
@@ -291,17 +319,16 @@ const RegisterPage = () => {
                             <FileUploadList/>
                             <FileUploadClearTrigger asChild>
                                 <CloseButton
-                                me="-1"
-                                size="xs"
                                 variant="plain"
                                 focusVisibleRing="inside"
                                 focusRingWidth="2px"
                                 pointerEvents="auto"
-                                color="fg.subtle"
+                                color="white"
                                 />
                             </FileUploadClearTrigger>
                         </FileUploadRoot>
                     </Field>
+                    <HCaptcha sitekey={HCKEY} onVerify={() => setIsHuman(true)}/>
                 </Fieldset.Content>
 
                 <Button background={{base:"purple.400", _dark:"white"}} h={"50px"} w={"100%"} color={{base:"white", _dark:"black"}}

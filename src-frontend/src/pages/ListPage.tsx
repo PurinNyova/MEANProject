@@ -73,7 +73,7 @@ const ListPage: React.FC = () => {
 
   const fetchData = async (param?: string, queryValue?: string) => {
     try {
-      let url = "http://localhost:3001/api/db/";
+      let url = import.meta.env.VITE_PROXY;
       if (param && queryValue) {
         url += `${param}?value=${queryValue}`;
       }

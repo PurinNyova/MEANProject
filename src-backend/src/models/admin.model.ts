@@ -5,10 +5,6 @@ const adminDatabaseSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    posisi: {
-        type: String,
-        required: true
-    },
     email: {
         type: String,
         required: true

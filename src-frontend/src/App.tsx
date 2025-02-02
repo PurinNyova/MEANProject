@@ -9,8 +9,35 @@ import AboutPage from "./pages/AboutPage";
 import ListPage from "./pages/ListPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
+import { useEffect, useState } from "react";
+
+export type ApiResponse = {
+  type?: string; // Users keyed by string indices and `success` boolean
+  success: boolean;
+};
 
 function App() {
+
+  const [sessionCheck, setSessionCheck] = useState<boolean>(false)
+
+  /*useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let url = "https://dev.purinnova.online:5172/";
+        const response = await fetch(url);
+        const data: ApiResponse = await response.json();
+  
+        if (data.success && data.type === 'session') {
+          setSessionCheck(true)
+        } else {
+          console.error("No session");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData()
+  }, [])*/
 
   return (
     <Box minH={"100vh"}
@@ -18,7 +45,7 @@ function App() {
     gradientFrom={{base:"purple.100", _dark:"purple.950"}}
     gradientTo={{base:"purple.300", _dark:"violet"}}
     transitionProperty={"background"} transitionDuration={"fast"}>
-     <Navbar />
+     <Navbar sessionCheck={sessionCheck}/>
      <Routes>
       <Route path='/' element={<HomePage />} />
       <Route path='/about' element={<AboutPage />} />
