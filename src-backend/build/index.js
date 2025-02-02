@@ -12,14 +12,13 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const db_1 = require("./db/db");
 const express_session_1 = __importDefault(require("express-session"));
 const connect_mongo_1 = __importDefault(require("connect-mongo"));
-const crypto_1 = __importDefault(require("crypto"));
 const bcryptjs_1 = require("bcryptjs");
 dotenv_1.default.config();
 const PORT = process.env.PORT ?? 'default';
 const MONGO_URI = process.env.MONGO_URI ?? 'default';
 const app = (0, express_1.default)();
 const sessionMiddleware = (0, express_session_1.default)({
-    secret: crypto_1.default.randomBytes(32).toString('hex'),
+    secret: 'didYouKnowThatVaporeon?',
     resave: true,
     saveUninitialized: true,
     store: connect_mongo_1.default.create({ mongoUrl: 'mongodb://localhost:27017/main_database', collectionName: 'sessions' }),

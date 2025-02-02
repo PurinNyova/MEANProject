@@ -1,6 +1,6 @@
 import { Text, Button, Input, Flex, Fieldset, Stack } from '@chakra-ui/react'
 import { Container } from '@chakra-ui/react/container'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { formStyle } from './ListPage'
 import { Field } from '../components/ui/field';
 import { ApiResponse } from '../App';
@@ -55,9 +55,9 @@ const LoginPage = () => {
           const data: ApiResponse = await response.json();
   
           if (data.success && data.type === 'login') {
-              navigate('/dashboard')
+              useEffect(() => {navigate('/dashboard')}, [])
           } else if (data.success && data.type === 'session') {
-              navigate('/dashboard')
+              useEffect(() => {navigate('/dashboard')}, [])
           } else {
               console.error("API returned an error or success is false.");
           }

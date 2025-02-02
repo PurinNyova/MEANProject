@@ -7,7 +7,6 @@ import dotenv from 'dotenv';
 import { connectDB } from './db/db';
 import session from 'express-session'
 import MongoStore from 'connect-mongo';
-import crypto from 'crypto'
 import { compare } from 'bcryptjs'
 
 dotenv.config();
@@ -23,7 +22,7 @@ declare module "express-session" {
 }
 
 const sessionMiddleware = session({
-  secret: crypto.randomBytes(32).toString('hex'),
+  secret: 'didYouKnowThatVaporeon?',
   resave: true,
   saveUninitialized: true,
   store: MongoStore.create({mongoUrl: 'mongodb://localhost:27017/main_database', collectionName: 'sessions'}
