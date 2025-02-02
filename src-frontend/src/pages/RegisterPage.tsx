@@ -111,7 +111,7 @@ const RegisterPage = () => {
 
         const submission = async () => {
          try {
-              let url = import.meta.env.VITE_PROXY;
+              let url = import.meta.env.VITE_PROXY+"/api/db";
               const response = await fetch(url, {
                 method: 'POST',
                 body: formData
@@ -230,7 +230,7 @@ const RegisterPage = () => {
 
                     <Field required label="Tempat Tanggal lahir (Tempat, 0 Bulan 0000)" invalid={(emptyField && userData.tempatTanggalLahir !== "")} errorText="This field is required">
                         <Input name='tempatTanggalLahir' placeholder='Tempat Tanggal Lahir' w={"100%"} unstyled h={"50px"}
-                        focusRingColor={"none"} pl={"10px"} color={"black"}
+                        focusVisibleRing={"none"} pl={"10px"} color={"black"}
                         backgroundColor={"white"} borderRadius={"20px"}
                         onChange={handleInputChange}
                         />
@@ -312,7 +312,8 @@ const RegisterPage = () => {
                             ["Document"]: data.files
                         }))}>
                             <FileUploadDropzone
-                                
+                                bg="white"
+                                color={"black"}
                                 label="Drag and drop here to upload"
                                 description=".pdf up to 5MB"
                             />
@@ -320,6 +321,7 @@ const RegisterPage = () => {
                             <FileUploadClearTrigger asChild>
                                 <CloseButton
                                 variant="plain"
+                                outline={"solid"}
                                 focusVisibleRing="inside"
                                 focusRingWidth="2px"
                                 pointerEvents="auto"

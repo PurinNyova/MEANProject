@@ -73,9 +73,9 @@ const ListPage: React.FC = () => {
 
   const fetchData = async (param?: string, queryValue?: string) => {
     try {
-      let url = import.meta.env.VITE_PROXY;
+      let url = import.meta.env.VITE_PROXY+"api/db";
       if (param && queryValue) {
-        url += `${param}?value=${queryValue}`;
+        url += `/${param}?value=${queryValue}`;
       }
       const response = await fetch(url);
       const data: ApiResponse = await response.json();
@@ -134,7 +134,7 @@ const ListPage: React.FC = () => {
           
             <Group attached w={"70%"}>
               <Input placeholder='Query'
-              w={"100%"} unstyled h={"95%"} background={"none"} focusRingColor={"none"}
+              w={"100%"} unstyled h={"95%"} background={"none"} focusVisibleRing={"none"}
               color={"black"}
               onChange={(data) => {setQuery(data.target.value); handleSearch(data)}}/>
               <DomainSelect onSelectValue={setSelectedParam}/>

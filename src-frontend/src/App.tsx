@@ -20,12 +20,13 @@ function App() {
 
   const [sessionCheck, setSessionCheck] = useState<boolean>(false)
 
-  /*useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       try {
-        let url = "https://dev.purinnova.online:5172/";
-        const response = await fetch(url);
+        let url = import.meta.env.VITE_PROXY+"login";
+        const response = await fetch(url, {credentials: 'include'});
         const data: ApiResponse = await response.json();
+        console.log(data.success, data.type)
   
         if (data.success && data.type === 'session') {
           setSessionCheck(true)
@@ -37,13 +38,13 @@ function App() {
       }
     };
     fetchData()
-  }, [])*/
+  }, [])
 
   return (
     <Box minH={"100vh"}
     bgGradient={"to-b"}
     gradientFrom={{base:"purple.100", _dark:"purple.950"}}
-    gradientTo={{base:"purple.300", _dark:"violet"}}
+    gradientTo={{base:"purple.300", _dark:"purple.800"}}
     transitionProperty={"background"} transitionDuration={"fast"}>
      <Navbar sessionCheck={sessionCheck}/>
      <Routes>
@@ -53,6 +54,7 @@ function App() {
       <Route path='/list/:param' element={<ListPage />}/>
       <Route path='/register' element={<RegisterPage />}/>
       <Route path='/login' element={<LoginPage />}/>
+      <Route path='/dashboard' element={<ListPage />}/>
      </Routes>
     </Box>
   )

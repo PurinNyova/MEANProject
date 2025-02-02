@@ -29,7 +29,7 @@ const HomePage = () => {
         w={"50%"} h={"50px"} pl={"10px"}
         backgroundColor={"white"} borderRadius={"20px"}
         display={"inline-flex"} alignItems={"center"}>
-          <Input placeholder='Student Name' w={"70%"} unstyled h={"95%"} background={"none"} onChange={(data) => setQuery(data.target.value)}/>
+          <Input placeholder='Student Name' w={"70%"} focusVisibleRing={"none"} unstyled h={"95%"} background={"none"} onChange={(data) => setQuery(data.target.value)}/>
           <Button background={"purple.400"} ml={"2%"} h={"100%"} w={"30%"} onClick={() => {navigate(`/list/name?value=${query}`)}}>Submit</Button>
         </Box>
 

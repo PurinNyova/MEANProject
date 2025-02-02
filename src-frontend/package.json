@@ -2,7 +2,7 @@
   "name": "src-frontend",
   "private": true,
   "version": "0.0.0",
-  "proxy": "http://dev.purinnova.online:5172",
+  "proxy": "http://localhost:3001",
   "type": "module",
   "scripts": {
     "dev": "vite",

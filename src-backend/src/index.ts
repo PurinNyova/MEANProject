@@ -24,7 +24,7 @@ declare module "express-session" {
 
 const sessionMiddleware = session({
   secret: crypto.randomBytes(32).toString('hex'),
-  resave: false,
+  resave: true,
   saveUninitialized: true,
   store: MongoStore.create({mongoUrl: 'mongodb://localhost:27017/main_database', collectionName: 'sessions'}
   ),
@@ -37,40 +37,66 @@ const sessionMiddleware = session({
 var cors = require('cors')
 app.use(express.json());
 app.use(cors())
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://dev.purinnova.online:5173');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
+
 app.use("/api/users", usersRouter)
 app.use("/api/cdn", sessionMiddleware, cdnRouter)
 app.use("/api/db", testRouter)
 
 
 // Serve HTML file
-app.get('/', /*sessionMiddleware,*/ (req: Request, res: Response) => {
-  /*if (req.session.user) {
+app.get('/', sessionMiddleware, (req: Request, res: Response) => {
+  if (req.session.user) {
     res.status(200).json({type: 'session', success: true})
-  } else {*/
+  } else {
   res.status(200).json({success: true})
+  }
 });
 
 app.get('/login', sessionMiddleware, async (req: Request, res: Response) => {
   if (req.session.user) {
     res.status(200).json({type: 'session', success: true})
   } else {
-      const {username, email, password} = req.body
-      const adminQuery = await AdminSchema.findOne(
-        {$or : [{email: email}, {name: username}]},
-        function (err: any, docs: any) {
-        if (err){ console.error(err)}
-    });
+    res.status(200).json({type: 'session', success: false})
+  }
+});
 
-    if (adminQuery) {
-      const check = await compare(password, adminQuery.password)
-      if (check) {
-        req.session.user = 'username'
+app.post('/login', sessionMiddleware, express.urlencoded({ extended: true }), async (req: Request, res: Response) => {
+  console.log(req.session)
+  if (req.session.user) {
+    res.status(200).json({ type: 'session', success: true });
+  } else {
+    const { name, email, password } = req.body;
+    console.log(req.body)
+    
+    try {
+      const adminQuery = await AdminSchema.findOne({ $or: [{ email: email }, { name: name }] });
+      
+      if (adminQuery) {
+        const check = await compare(password, adminQuery.password);
+        
+        if (check) {
+          req.session.user = name;
+          console.log(name)
+          console.log(req.session.user)
+          res.status(201).json({ type: 'login', success: true });
+        } else {
+          res.status(401).json({ type: 'login', success: false });
+        }
+      } else {
+        res.status(401).json({ type: 'login', success: false, message: 'no user' });
       }
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ type: 'error', message: 'An error occurred' });
     }
   }
+});
 
-
-})
 
 app.listen(PORT, () => {
   connectDB();

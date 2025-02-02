@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { formStyle } from './ListPage'
 import { Field } from '../components/ui/field';
 import { ApiResponse } from '../App';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginInterface {
   name: string;
@@ -12,6 +13,8 @@ interface LoginInterface {
 }
 
 const LoginPage = () => {
+
+    const navigate = useNavigate();
 
     const [loginInterface, setLoginInterface] = useState<LoginInterface>({
       name: "",
@@ -28,34 +31,41 @@ const LoginPage = () => {
         console.log(loginInterface)
     };
 
-    const handleSubmitForm = async (data: LoginInterface) => {  
-        let formData = new FormData();
-        for (const key in data) {
-            if (data.hasOwnProperty(key)) {
+    const handleSubmitForm = async (data: LoginInterface) => {
+      let urlEncodedData = new URLSearchParams();
+  
+      for (const key in data) {
+          if (data.hasOwnProperty(key)) {
               const dataKey = key as keyof LoginInterface; // Use keyof operator
-                const value = data[dataKey]?.toString() || '';
-                formData.append(key, value);
-              }
-            }
-
-         try {
-              let url = "http://localhost:3001/api/db/";
-              const response = await fetch(url, {
-                method: 'POST',
-                body: formData
-              });
-              const data: ApiResponse = await response.json();
-        
-              if (data.success) {
-                alert("Upload Successful")
-              } else {
-                console.error("API returned an error or success is false.");
-              }
-            } catch (error) {
-              console.error("Error fetching data:", error);
-            }
-        }
-
+              const value = data[dataKey]?.toString() || '';
+              urlEncodedData.append(key, value);
+          }
+      }
+  
+      try {
+          let url = import.meta.env.VITE_PROXY+"login";
+          const response = await fetch(url, {
+              method: 'POST',
+              credentials: 'include',
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              body: urlEncodedData.toString()
+          });
+          const data: ApiResponse = await response.json();
+  
+          if (data.success && data.type === 'login') {
+              navigate('/dashboard')
+          } else if (data.success && data.type === 'session') {
+              navigate('/dashboard')
+          } else {
+              console.error("API returned an error or success is false.");
+          }
+      } catch (error) {
+          console.error("Error fetching data:", error);
+      }
+  };
+  
     return (
       <Container maxW={"90vw"} px={4} py={{base: "100px", sm:"50px"}}>
         <Flex
@@ -111,7 +121,7 @@ const LoginPage = () => {
                 </Fieldset.Content>
 
                 <Button background={{base:"purple.400", _dark:"white"}} h={"50px"} w={"100%"} color={{base:"white", _dark:"black"}}
-                onClick={() => console.log(loginInterface)/*handleSubmitForm(loginInterface)*/}>Login</Button>
+                onClick={() => /*console.log(loginInterface)*/handleSubmitForm(loginInterface)}>Login</Button>
                 </Fieldset.Root>
           </form>
         </Flex>
