@@ -6,7 +6,7 @@ interface DomainSelectProps {
   onSelectValue: (value: string) => void;
 }
 
-const DomainSelect: React.FC<DomainSelectProps> = ({onSelectValue}) => {
+export const DomainSelect: React.FC<DomainSelectProps> = ({onSelectValue}) => {
 
   const [buttonText, setButtonText] = useState("Name");
 
@@ -70,6 +70,7 @@ const ListPage: React.FC = () => {
   const [userDatabase, setUserDatabase] = useState<UserData[]>([]);
   const [query, setQuery] = useState("")
   const [selectedParam, setSelectedParam] = useState("name")
+  const location = useLocation()
 
   const fetchData = async (param?: string, queryValue?: string) => {
     try {
@@ -96,7 +97,7 @@ const ListPage: React.FC = () => {
     if (param && value) {
       fetchData(param, value)
     } else {fetchData()}
-  }, []);
+  }, [location]);
 
   // Example function to handle search
   const handleSearch = (event: React.FormEvent) => {

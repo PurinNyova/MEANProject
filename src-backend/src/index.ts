@@ -58,7 +58,7 @@ app.get('/', sessionMiddleware, (req: Request, res: Response) => {
 
 app.get('/login', sessionMiddleware, async (req: Request, res: Response) => {
   if (req.session.user) {
-    res.status(200).json({type: 'session', success: true})
+    res.status(200).json({ type: 'session', success: true, username: req.session.user });
   } else {
     res.status(200).json({type: 'session', success: false})
   }
@@ -67,7 +67,7 @@ app.get('/login', sessionMiddleware, async (req: Request, res: Response) => {
 app.post('/login', sessionMiddleware, express.urlencoded({ extended: true }), async (req: Request, res: Response) => {
   console.log(req.session)
   if (req.session.user) {
-    res.status(200).json({ type: 'session', success: true });
+    res.status(200).json({ type: 'session', success: true, username: req.session.user });
   } else {
     const { name, email, password } = req.body;
     console.log(req.body)
@@ -94,6 +94,16 @@ app.post('/login', sessionMiddleware, express.urlencoded({ extended: true }), as
       res.status(500).json({ type: 'error', message: 'An error occurred' });
     }
   }
+});
+
+app.post('/logout', sessionMiddleware, (req: Request, res: Response) => {
+  req.session.destroy((err) => {
+    if (err) {
+      res.status(500).json({success: false, type: 'logout'})
+      return
+    }
+    res.status(200).json({success: true, type: 'logout'})
+  });
 });
 
 

@@ -44,7 +44,7 @@ router.get("/:param", async (request, response) => {
     }
     try {
         const query = {};
-        // Using regex for approximate, case-insensitive, partial match
+        // Regex for da search thingy below
         query[paramField] = { $regex: new RegExp(queryValue, 'i') };
         const queriedUser = await user_model_1.default.find(query);
         console.log(queriedUser);
@@ -59,7 +59,7 @@ router.post("/", upload.array('files'), async (request, response) => {
     const user = request.body;
     console.log(user);
     if (!user.name || !user.email || !user.npm || !user.kelas || !user.jurusan || !user.lokasiKampus || !user.tempatTanggalLahir || !user.kelamin || !user.alamat || !user.noHP || !user.posisi || !user.lastIPK) {
-        response.status(400).json({ response: 'Invalid Body: Is every required field populated?' });
+        response.status(400).json({ success: false, message: 'Invalid Body: Is every required field populated?' });
         return;
     }
     const newUser = new user_model_1.default(user);

@@ -1,12 +1,15 @@
 import { Button, Container, Flex, HStack, Link, Text } from '@chakra-ui/react';
 import { ColorModeButton } from './ui/color-mode';
 import SideBar from './sidebar';
+import { useNavigate } from 'react-router-dom';
 
 interface navSess {
   sessionCheck?: boolean
 }
 
 const navbar: React.FC<navSess> = ({sessionCheck}) => {
+
+  const navigate = useNavigate();
 
   return (
     <Container maxW={"90vw"} px={4} paddingTop={"2vh"}>
@@ -30,30 +33,29 @@ const navbar: React.FC<navSess> = ({sessionCheck}) => {
         color={{base: "black", _dark: "white"}}
         hideBelow={"40em"}
         >
-        Placeholder
+        Universitas Gunadarma
         </Text>
 
         <HStack justifyContent={"space-evenly"} minW={"50%"} hideBelow={"md"} fontWeight={"bold"}>
-            <Link href='/register'>
+            <Link onClick={() => navigate('/register')}>
             <Text color={{base: "black", _dark: "white"}}>Registration</Text>
             </Link>
-            <Link href='/list'>
+            <Link onClick={() => navigate('/list')}>
             <Text color={{base: "black", _dark: "white"}}>List</Text>
             </Link>
-            <Link href={sessionCheck ? '/dashboard' : '/login'}>
-            <Text color={{base: "black", _dark: "white"}}>{sessionCheck ? 'Dashboard' : 'Admin'}</Text>
+            <Link onClick={() => {
+                const route = sessionCheck ? '/dashboard' : '/login';
+                navigate(route);
+            }} >
+                <Text color={{base: "black", _dark: "white"}}>{sessionCheck ? 'Dashboard' : 'Admin'}</Text>
             </Link>
         </HStack>
 
         <HStack alignItems={"center"}>
             {location.pathname !== "/" && ( // Show the Home button only if not on the root route
-              <Link href={"/"}>
-                <Button bg={"green.400"}>Home</Button>
-              </Link>
+                <Button bg={"green.400"} onClick={() => navigate('/')}>Home</Button>
             )}
-            <Link href={"/about"}>
-            <Button bg={"purple.400"}>About</Button>
-            </Link>
+            <Button bg={"purple.400"} onClick={() => navigate('/about')}>About</Button>
             <ColorModeButton></ColorModeButton>
 
         </HStack>

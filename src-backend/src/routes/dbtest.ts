@@ -18,7 +18,7 @@ interface UserInput {
     noHP: number;
     email: string;
     posisi: string;
-    lastIPK: string;
+    lastIPK: number;
     files?: File[];
   }
 
@@ -65,7 +65,7 @@ router.get("/:param", async (request: Request, response: Response) => {
 
     try {
         const query: any = {};
-        // Using regex for approximate, case-insensitive, partial match
+        // Regex for da search thingy below
         query[paramField] = { $regex: new RegExp(queryValue as string, 'i') }; 
         const queriedUser = await UserSchema.find(query);
         console.log(queriedUser);
@@ -81,7 +81,7 @@ router.post("/", upload.array('files'), async (request: Request, response: Respo
     console.log(user)
 
     if (!user.name || !user.email || !user.npm || !user.kelas || !user.jurusan || !user.lokasiKampus || !user.tempatTanggalLahir || !user.kelamin || !user.alamat || !user.noHP || !user.posisi || !user.lastIPK) {
-        response.status(400).json({ response: 'Invalid Body: Is every required field populated?' });
+        response.status(400).json({ success: false, message: 'Invalid Body: Is every required field populated?' });
         return
     }
 

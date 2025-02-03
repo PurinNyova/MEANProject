@@ -2,7 +2,7 @@
 //import reactLogo from './assets/react.svg'
 //import viteLogo from '/vite.svg'
 import { Box } from "@chakra-ui/react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import Navbar from "./components/navbar";
 import AboutPage from "./pages/AboutPage";
@@ -10,15 +10,19 @@ import ListPage from "./pages/ListPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import { useEffect, useState } from "react";
+import DashboardPage from "./pages/DashboardPage";
 
 export type ApiResponse = {
   type?: string; // Users keyed by string indices and `success` boolean
   success: boolean;
+  username?: string;
 };
 
 function App() {
 
-  const [sessionCheck, setSessionCheck] = useState<boolean>(false)
+  const location = useLocation()
+  const [username, setUsername] = useState("")
+  const [sessionCheck, setSessionCheck] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,8 +32,9 @@ function App() {
         const data: ApiResponse = await response.json();
         console.log(data.success, data.type)
   
-        if (data.success && data.type === 'session') {
+        if (data.success && data.type === 'session' && data.username) {
           setSessionCheck(true)
+          setUsername(data.username)
         } else {
           console.error("No session");
         }
@@ -38,7 +43,7 @@ function App() {
       }
     };
     fetchData()
-  }, [])
+  }, [location])
 
   return (
     <Box minH={"100vh"}
@@ -54,7 +59,7 @@ function App() {
       <Route path='/list/:param' element={<ListPage />}/>
       <Route path='/register' element={<RegisterPage />}/>
       <Route path='/login' element={<LoginPage />}/>
-      <Route path='/dashboard' element={<ListPage />}/>
+      <Route path='/dashboard' element={<DashboardPage loginState={sessionCheck} username={username}/>}/>
      </Routes>
     </Box>
   )
