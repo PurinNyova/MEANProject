@@ -55,9 +55,9 @@ const LoginPage = () => {
           const data: ApiResponse = await response.json();
   
           if (data.success && data.type === 'login') {
-              navigate('/dashboard')
+                navigate('/dashboard')
           } else if (data.success && data.type === 'session') {
-              navigate('/dashboard')
+                navigate('/dashboard')
           } else {
               console.error("API returned an error or success is false.");
           }

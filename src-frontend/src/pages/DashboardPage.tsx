@@ -2,27 +2,41 @@ import { Box, Button, Container, Flex, For, Group, HStack, Input, Link, Table, T
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate} from 'react-router-dom';
 import { UserData, DomainSelect, ApiResponse, formStyle } from './ListPage';
+import { ApiResponse as LoginCheck } from '../App';
 
-interface props {
-    loginState: boolean;
-    username: string;
-}
-
-const DashboardPage: React.FC<props> = ({loginState, username}) => {
+const DashboardPage: React.FC = () => {
 
     const navigate = useNavigate()
+    const location = useLocation()
 
+    const [sessionCheck, setSessionCheck] = useState(false)
+    const [username, setUsername] = useState("")
 
-    useEffect(() => {if (!loginState) {
-        alert(loginState)
-        navigate('/')
-        return
-    }}, [])
+    const fetchLogin = async () => {
+          try {
+            let url = import.meta.env.VITE_PROXY+"login";
+            const response = await fetch(url, {credentials: 'include'});
+            const data: LoginCheck = await response.json();
+            console.log(data.success, data.type)
+      
+            if (data.success && data.type === 'session' && data.username) {
+              setSessionCheck(true)
+              setUsername(data.username)
+            } else {
+                alert(sessionCheck)
+                navigate('/')
+                console.error("No session");
+            }
+          } catch (error) {
+            console.error("Error fetching data:", error);
+          }
+        };
+    fetchLogin()
+
 
     const [userDatabase, setUserDatabase] = useState<UserData[]>([]);
     const [query, setQuery] = useState("")
     const [selectedParam, setSelectedParam] = useState("name")
-    const location = useLocation()
 
     const fetchData = async (param?: string, queryValue?: string) => {
         try {

@@ -9,7 +9,7 @@ import AboutPage from "./pages/AboutPage";
 import ListPage from "./pages/ListPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import DashboardPage from "./pages/DashboardPage";
 
 export type ApiResponse = {
@@ -18,10 +18,21 @@ export type ApiResponse = {
   username?: string;
 };
 
-function App() {
+interface PageProps {
+  title?: string;
+  children: ReactNode;
+}
 
+const Page: React.FC<PageProps> = (props) => {
+  useEffect(() => {
+    document.title = props.title || "";
+  }, [props.title]);
+  return props.children;
+};
+
+function App() {
   const location = useLocation()
-  const [username, setUsername] = useState("")
+
   const [sessionCheck, setSessionCheck] = useState(false)
 
   useEffect(() => {
@@ -34,7 +45,6 @@ function App() {
   
         if (data.success && data.type === 'session' && data.username) {
           setSessionCheck(true)
-          setUsername(data.username)
         } else {
           console.error("No session");
         }
@@ -53,13 +63,40 @@ function App() {
     transitionProperty={"background"} transitionDuration={"fast"}>
      <Navbar sessionCheck={sessionCheck}/>
      <Routes>
-      <Route path='/' element={<HomePage />} />
-      <Route path='/about' element={<AboutPage />} />
-      <Route path='/list' element={<ListPage />}/>
-      <Route path='/list/:param' element={<ListPage />}/>
-      <Route path='/register' element={<RegisterPage />}/>
-      <Route path='/login' element={<LoginPage />}/>
-      <Route path='/dashboard' element={<DashboardPage loginState={sessionCheck} username={username}/>}/>
+      <Route path='/' element={
+        <Page title="Home">
+        <HomePage />
+        </Page>} />
+      <Route path='/about' element={
+        <Page title="About">
+          <AboutPage />
+        </Page>
+      } />
+      <Route path='/list' element={
+        <Page title="Enrolled Students">
+          <ListPage />
+        </Page>
+      }/>
+      <Route path='/list/:param' element={
+        <Page title="Enrolled Students">
+          <ListPage />
+        </Page>
+      }/>
+      <Route path='/register' element={
+        <Page title="Register">
+          <RegisterPage />
+        </Page>
+      }/>
+      <Route path='/login' element={
+        <Page title="Login">
+          <LoginPage />
+        </Page>
+      }/>
+      <Route path='/dashboard' element={
+        <Page title="Dashboard">
+          <DashboardPage/>
+        </Page>
+      }/>
      </Routes>
     </Box>
   )
