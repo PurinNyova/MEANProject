@@ -151,7 +151,7 @@ const DashboardPage: React.FC = () => {
                     <Table.Cell>
                         <HStack>
                             <Popup buttonText='Delete' dialogTitle='Are you sure?'
-                            dialogText='If you decide to continue, this process will be irriversible'
+                            dialogText='If you decide to continue, this process will be irreversible'
                             dialogButtonText='Delete'
                             onClickFunc={() => handleDelete(item.npm.toString())}/>
                             <Button bg={"yellow"} color={"black"} value={item.npm}>Edit</Button>
