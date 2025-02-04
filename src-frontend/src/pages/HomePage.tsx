@@ -8,25 +8,25 @@ const HomePage = () => {
   const [query, setQuery] = useState("");
 
   return (
-    <Container maxW={"90vw"} px={4} py={{base: "100px", sm:"50px"}}>
+    <Container maxW={"90vw"} px={4} py={{base: "50px", sm:"100px"}}>
       <Flex
       alignItems={"start"}
       flexDir={"column"}
       >
         <Text
         fontWeight={"bold"}
-        fontSize={"5vw"}
-        maxW={"70%"}>
+        fontSize={{base:"8vw", sm:"5vw"}}
+        w={{base:"90%", sm:"70%"}}>
           Welcome to<br></br>Student Registration
         </Text>
 
-        <Text maxW={"50%"} fontSize={"2vw"} pb={"2vw"}>
+        <Text w={{base:"80%", sm:"50%"}} fontSize={{base:"3vw", sm:"2vw"}} pb={"2vw"}>
         Embark on Your Educational Journey: Register Now to Unlock Opportunities in Learning and Growth
         </Text>
 
         <Box
         overflow={"hidden"}
-        w={"50%"} h={"50px"} pl={"10px"}
+        w={{base:"90%", sm:"50%"}} h={"50px"} pl={"10px"}
         backgroundColor={"white"} borderRadius={"20px"}
         display={"inline-flex"} alignItems={"center"}>
           <Input  color={"black"} placeholder='Student Name' w={"70%"} focusVisibleRing={"none"} unstyled h={"95%"} background={"none"} onChange={(data) => setQuery(data.target.value)}/>

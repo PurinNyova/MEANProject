@@ -12,8 +12,11 @@ import { FileUploadDropzone, FileUploadList } from '../components/ui/file-upload
 import { ApiResponse } from './ListPage';
 import { CloseButton } from '../components/ui/close-button';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
+import { useNavigate } from 'react-router-dom';
 
 const RegisterPage = () => {
+
+    const navigate = useNavigate()
     const HCKEY: string = import.meta.env.VITE_HC_SITE_KEY
     console.log(HCKEY)
 
@@ -120,6 +123,7 @@ const RegisterPage = () => {
         
               if (data.success) {
                 alert("Upload Successful")
+                navigate(0)
               } else {
                 console.error("API returned an error or success is false.");
               }

@@ -18,12 +18,11 @@ const navbar: React.FC<navSess> = ({sessionCheck}) => {
         alignItems={"center"}
         justifyContent={"space-between"}
         flexDir={{
-            base:"column",
-            sm:"row"
+            base:"row",
         }}
         >
 
-        <Container hideFrom={"md"} p={0} w={"5px"} m={0} alignContent={"start"}><SideBar /></Container>
+        <Container hideFrom={"md"} p={0} w={"5px"} m={0} alignContent={"start"}><SideBar sessionCheck={sessionCheck}/></Container>
 
         <Text
         fontSize={{ base: "10pt", md: "12pt"}}
@@ -31,7 +30,7 @@ const navbar: React.FC<navSess> = ({sessionCheck}) => {
         textTransform={"uppercase"}
         textAlign={"center"}
         color={{base: "black", _dark: "white"}}
-        hideBelow={"40em"}
+        hideBelow={"30em"}
         >
         Universitas Gunadarma
         </Text>

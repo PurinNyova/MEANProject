@@ -11,7 +11,8 @@ const userDatabaseSchema = new mongoose_1.default.Schema({
     },
     npm: {
         type: Number,
-        required: true
+        required: true,
+        unique: true
     },
     kelas: {
         type: String,

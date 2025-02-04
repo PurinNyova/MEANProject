@@ -42,13 +42,14 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(sessionMiddleware)
 app.use("/api/users", usersRouter)
-app.use("/api/cdn", sessionMiddleware, cdnRouter)
-app.use("/api/db", testRouter)
+app.use("/api/cdn", cdnRouter)
+app.use("/api/db",testRouter)
 
 
 // Serve HTML file
-app.get('/', sessionMiddleware, (req: Request, res: Response) => {
+app.get('/', (req: Request, res: Response) => {
   if (req.session.user) {
     res.status(200).json({type: 'session', success: true})
   } else {
@@ -56,7 +57,8 @@ app.get('/', sessionMiddleware, (req: Request, res: Response) => {
   }
 });
 
-app.get('/login', sessionMiddleware, async (req: Request, res: Response) => {
+app.get('/login', async (req: Request, res: Response) => {
+  console.log(req.session)
   if (req.session.user) {
     res.status(200).json({ type: 'session', success: true, username: req.session.user });
   } else {
@@ -64,7 +66,7 @@ app.get('/login', sessionMiddleware, async (req: Request, res: Response) => {
   }
 });
 
-app.post('/login', sessionMiddleware, express.urlencoded({ extended: true }), async (req: Request, res: Response) => {
+app.post('/login', express.urlencoded({ extended: true }), async (req: Request, res: Response) => {
   console.log(req.session)
   if (req.session.user) {
     res.status(200).json({ type: 'session', success: true, username: req.session.user });
@@ -73,7 +75,7 @@ app.post('/login', sessionMiddleware, express.urlencoded({ extended: true }), as
     console.log(req.body)
     
     try {
-      const adminQuery = await AdminSchema.findOne({ $or: [{ email: email }, { name: name }] });
+      const adminQuery = await AdminSchema.findOne({ $and: [{ email: email }, { name: name }] });
       
       if (adminQuery) {
         const check = await compare(password, adminQuery.password);
@@ -96,7 +98,7 @@ app.post('/login', sessionMiddleware, express.urlencoded({ extended: true }), as
   }
 });
 
-app.post('/logout', sessionMiddleware, (req: Request, res: Response) => {
+app.post('/logout', (req: Request, res: Response) => {
   req.session.destroy((err) => {
     if (err) {
       res.status(500).json({success: false, type: 'logout'})

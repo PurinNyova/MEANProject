@@ -3,6 +3,12 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate} from 'react-router-dom';
 import { UserData, DomainSelect, ApiResponse, formStyle } from './ListPage';
 import { ApiResponse as LoginCheck } from '../App';
+import Popup from '../components/popup';
+
+interface deleteResponse {
+    message: string;
+    success: boolean;
+}
 
 const DashboardPage: React.FC = () => {
 
@@ -71,14 +77,33 @@ const DashboardPage: React.FC = () => {
         const queryValue = query; // using state for the query value
         fetchData(param, queryValue);
     }
-    
+
+    const handleDelete = async (npm: string) => {
+        try {
+              let url = import.meta.env.VITE_PROXY+"api/db/del/"+npm;
+              const response = await fetch(url, {
+                method: 'POST',
+                credentials: 'include',
+              })
+              const data: deleteResponse = await response.json();
+        
+              if (data.success) {
+                navigate(0)
+              } else {
+                console.error("API returned an error or success is false.");
+              }
+            } catch (error) {
+              console.error("Error fetching data:", error);
+            }
+    }
 
     return (
-        <Container maxW={"90vw"} px={4} py={{base: "100px", sm:"50px"}}>
+        <Container maxW={"90vw"} px={4} py={{base: "100px", sm:"50px"}} transitionDuration={"slow"} transitionProperty={"all"}>
         <Flex
         alignItems={"start"}
         flexDir={"column"}
         >
+
             <Text
             fontWeight={"bold"}
             fontSize={"5vw"}
@@ -125,7 +150,10 @@ const DashboardPage: React.FC = () => {
                     <Table.Cell>{index + 1}</Table.Cell>
                     <Table.Cell>
                         <HStack>
-                            <Button bg={"red"} value={item.npm}>Delete</Button>
+                            <Popup buttonText='Delete' dialogTitle='Are you sure?'
+                            dialogText='If you decide to continue, this process will be irriversible'
+                            dialogButtonText='Delete'
+                            onClickFunc={() => handleDelete(item.npm.toString())}/>
                             <Button bg={"yellow"} color={"black"} value={item.npm}>Edit</Button>
                         </HStack>
                     </Table.Cell>

@@ -10,8 +10,16 @@ import {
   DrawerTrigger,
 } from "./ui/drawer"
 import { GiHamburgerMenu } from "react-icons/gi"
+import { useNavigate } from "react-router-dom"
 
-const SideBar: React.FC = () => {
+interface navSess {
+  sessionCheck?: boolean
+}
+
+const SideBar: React.FC<navSess> = ({sessionCheck}) => {
+
+  const navigate = useNavigate();
+
   return (
     <DrawerRoot placement={"start"}>
       <DrawerBackdrop />
@@ -26,15 +34,18 @@ const SideBar: React.FC = () => {
         </DrawerHeader>
         <DrawerBody>
             <Stack justifyContent={"space-evenly"} minW={"50%"} fontWeight={"bold"} separator={<StackSeparator />}>
-                <Link href='/register'>
-                <Text color={{base: "black", _dark: "white"}}>Pendaftaran</Text>
-                </Link>
-                <Link href='/list'>
-                <Text color={{base: "black", _dark: "white"}}>List Mahasiswa</Text>
-                </Link>
-                <Link href='/admin'>
-                <Text color={{base: "black", _dark: "white"}}>Administrasi</Text>
-                </Link>
+              <Link onClick={() => navigate('/register')}>
+              <Text color={{base: "black", _dark: "white"}}>Registration</Text>
+              </Link>
+              <Link onClick={() => navigate('/list')}>
+              <Text color={{base: "black", _dark: "white"}}>List</Text>
+              </Link>
+              <Link onClick={() => {
+                  const route = sessionCheck ? '/dashboard' : '/login';
+                  navigate(route);
+                  }} >
+                  <Text color={{base: "black", _dark: "white"}}>{sessionCheck ? 'Dashboard' : 'Admin'}</Text>
+              </Link>
             </Stack>
         </DrawerBody>
         <DrawerCloseTrigger />

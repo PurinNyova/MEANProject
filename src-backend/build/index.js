@@ -34,11 +34,12 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Credentials', 'true');
     next();
 });
+app.use(sessionMiddleware);
 app.use("/api/users", users_1.default);
-app.use("/api/cdn", sessionMiddleware, cdn_1.default);
+app.use("/api/cdn", cdn_1.default);
 app.use("/api/db", dbtest_1.default);
 // Serve HTML file
-app.get('/', sessionMiddleware, (req, res) => {
+app.get('/', (req, res) => {
     if (req.session.user) {
         res.status(200).json({ type: 'session', success: true });
     }
@@ -46,7 +47,8 @@ app.get('/', sessionMiddleware, (req, res) => {
         res.status(200).json({ success: true });
     }
 });
-app.get('/login', sessionMiddleware, async (req, res) => {
+app.get('/login', async (req, res) => {
+    console.log(req.session);
     if (req.session.user) {
         res.status(200).json({ type: 'session', success: true, username: req.session.user });
     }
@@ -54,7 +56,7 @@ app.get('/login', sessionMiddleware, async (req, res) => {
         res.status(200).json({ type: 'session', success: false });
     }
 });
-app.post('/login', sessionMiddleware, express_1.default.urlencoded({ extended: true }), async (req, res) => {
+app.post('/login', express_1.default.urlencoded({ extended: true }), async (req, res) => {
     console.log(req.session);
     if (req.session.user) {
         res.status(200).json({ type: 'session', success: true, username: req.session.user });
@@ -63,7 +65,7 @@ app.post('/login', sessionMiddleware, express_1.default.urlencoded({ extended: t
         const { name, email, password } = req.body;
         console.log(req.body);
         try {
-            const adminQuery = await admin_model_1.default.findOne({ $or: [{ email: email }, { name: name }] });
+            const adminQuery = await admin_model_1.default.findOne({ $and: [{ email: email }, { name: name }] });
             if (adminQuery) {
                 const check = await (0, bcryptjs_1.compare)(password, adminQuery.password);
                 if (check) {
@@ -86,7 +88,7 @@ app.post('/login', sessionMiddleware, express_1.default.urlencoded({ extended: t
         }
     }
 });
-app.post('/logout', sessionMiddleware, (req, res) => {
+app.post('/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) {
             res.status(500).json({ success: false, type: 'logout' });

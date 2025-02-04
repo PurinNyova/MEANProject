@@ -117,12 +117,12 @@ const ListPage: React.FC = () => {
       >
         <Text
         fontWeight={"bold"}
-        fontSize={"5vw"}
-        maxW={"70%"}>
+        fontSize={{base:"8vw", sm:"5vw"}}
+        w={{base:"90%", sm:"70%"}}>
           Enrolled Students
         </Text>
 
-        <Text maxW={"50%"} fontSize={"2vw"} pb={"2vw"}>
+        <Text w={{base:"80%", sm:"50%"}} fontSize={{base:"3vw", sm:"2vw"}} pb={"2vw"}>
         Here you can see all currently enrolled students
         </Text>
 
@@ -146,7 +146,7 @@ const ListPage: React.FC = () => {
         </form>
       </Flex>
 
-      <Table.ScrollArea borderWidth="1px" w={"100%"} mt={"40px"}>
+      <Table.ScrollArea borderWidth="1px" w={"100%"} mt={"40px"} maxW={"1000px"}>
         <Table.Root size="md">
           <Table.Header>
             <Table.Row>

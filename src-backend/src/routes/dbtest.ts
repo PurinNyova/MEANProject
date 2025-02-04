@@ -22,6 +22,7 @@ interface UserInput {
     files?: File[];
   }
 
+
 const storage = multer.diskStorage({
   destination: function (request, file, cb) {
     const dir = path.join('uploads', request.body.npm);
@@ -97,6 +98,30 @@ router.post("/", upload.array('files'), async (request: Request, response: Respo
     }
 
 
+})
+
+router.post("/del/:npm", async (request: Request, response: Response) => {
+    console.log(request.session.user)
+    if (request.session.user) {
+        const { npm } = request.params
+
+        if (!npm) {
+            response.status(400).json({ success: false, message: "npm value is required" });
+            return
+        }
+
+        try {
+            const queriedUser = await UserSchema.deleteOne({npm: npm});
+            console.log(queriedUser);
+            response.status(200).json({ success: true, ...queriedUser });
+        } catch (error: any) {
+            console.log("Error detected in dbtest get param", error.message);
+            response.status(500).json({ success: false, message: "Internal server error" });
+        }
+
+      } else {
+        response.status(400).json({type: 'session', success: false})
+      }
 })
 
 export default router;

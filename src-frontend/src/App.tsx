@@ -11,6 +11,7 @@ import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import { ReactNode, useEffect, useState } from "react";
 import DashboardPage from "./pages/DashboardPage";
+import Loader from "./components/Loader";
 
 export type ApiResponse = {
   type?: string; // Users keyed by string indices and `success` boolean
@@ -32,11 +33,12 @@ const Page: React.FC<PageProps> = (props) => {
 
 function App() {
   const location = useLocation()
-
   const [sessionCheck, setSessionCheck] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true)
       try {
         let url = import.meta.env.VITE_PROXY+"login";
         const response = await fetch(url, {credentials: 'include'});
@@ -50,10 +52,17 @@ function App() {
         }
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false)
       }
     };
     fetchData()
   }, [location])
+
+  if (loading) {
+    return <Loader />; // Display the loader while loading is true
+  }
+  
 
   return (
     <Box minH={"100vh"}

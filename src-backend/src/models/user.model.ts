@@ -7,7 +7,8 @@ const userDatabaseSchema = new mongoose.Schema({
     },
     npm: {
         type: Number,
-        required: true
+        required: true,
+        unique: true
     },
     kelas: {
         type: String,
