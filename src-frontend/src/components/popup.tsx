@@ -1,45 +1,46 @@
 import { Button, DialogActionTrigger, DialogBody, DialogCloseTrigger,
     DialogContent, DialogFooter, DialogHeader, DialogRoot, DialogTitle, DialogTrigger, DialogPositioner } from "@chakra-ui/react"
+import { ReactNode } from "react";
 
 interface popupProps {
     buttonText?: string;
     dialogTitle?: string;
-    dialogText?: string;
+    children?: ReactNode;
     dialogButtonText?: string;
     onClickFunc: Function;
+    buttonBg?: string;
 }
 
 const popup: React.FC<popupProps> = ({
     buttonText,
     dialogTitle,
-    dialogText,
+    children,
     dialogButtonText,
-    onClickFunc
+    onClickFunc,
+    buttonBg
 }) => {
 
   return (
     <DialogRoot modal closeOnInteractOutside={false}>
       <DialogTrigger asChild>
-        <Button bg={"red"}>
+        <Button bg={buttonBg}>
           {buttonText}
         </Button>
       </DialogTrigger>
       <DialogPositioner>
-          <DialogContent>
+          <DialogContent maxH={"90vh"}>
             <DialogHeader>
               <DialogTitle>{dialogTitle}</DialogTitle>
             </DialogHeader>
             <DialogBody>
-              <p>
-                {dialogText}
-              </p>
+              {children}
             </DialogBody>
             <DialogFooter>
               <DialogActionTrigger asChild>
                 <Button variant="outline">Cancel</Button>
               </DialogActionTrigger>
               <DialogActionTrigger asChild>
-                <Button onClick={() => {onClickFunc();}} bg={"red"}>{dialogButtonText}</Button>
+                <Button onClick={() => {onClickFunc();}} bg={buttonBg}>{dialogButtonText}</Button>
             </DialogActionTrigger>
             </DialogFooter>
             <DialogCloseTrigger />

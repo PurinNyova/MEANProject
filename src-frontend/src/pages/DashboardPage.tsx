@@ -4,6 +4,7 @@ import { useLocation, useNavigate} from 'react-router-dom';
 import { UserData, DomainSelect, ApiResponse, formStyle } from './ListPage';
 import { ApiResponse as LoginCheck } from '../App';
 import Popup from '../components/popup';
+import EditModal from '../components/editModal';
 
 interface deleteResponse {
     message: string;
@@ -151,10 +152,14 @@ const DashboardPage: React.FC = () => {
                     <Table.Cell>
                         <HStack>
                             <Popup buttonText='Delete' dialogTitle='Are you sure?'
-                            dialogText='If you decide to continue, this process will be irreversible'
-                            dialogButtonText='Delete'
-                            onClickFunc={() => handleDelete(item.npm.toString())}/>
-                            <Button bg={"yellow"} color={"black"} value={item.npm}>Edit</Button>
+                            dialogButtonText='Delete' buttonBg={"red"}
+                            onClickFunc={() => handleDelete(item.npm.toString())}><Text>If you decide to continue, this process will be irreversible</Text></Popup>
+                            <Popup buttonText='Edit' dialogTitle='Edit the Fields below'
+                            dialogButtonText='Save' buttonBg={"yellow"}
+                            onClickFunc={() => handleDelete(item.npm.toString())}>
+                                <Text>If you decide to continue, this process will be irreversible</Text>
+                                    <EditModal></EditModal>
+                                </Popup>
                         </HStack>
                     </Table.Cell>
                     <Table.Cell>{item.name}</Table.Cell>

@@ -9,10 +9,15 @@ import { UserData } from './ListPage';
 import { useState } from 'react';
 import { NumberInputField } from '../components/ui/number-input';
 import { FileUploadDropzone, FileUploadList } from '../components/ui/file-upload';
-import { ApiResponse } from './ListPage';
 import { CloseButton } from '../components/ui/close-button';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { useNavigate } from 'react-router-dom';
+import ButtonlessPopup from '../components/buttonlessPopup';
+
+interface ApiResponse {
+    success: boolean;
+    message: string;
+}
 
 const RegisterPage = () => {
 
@@ -22,6 +27,7 @@ const RegisterPage = () => {
 
     const [isHuman, setIsHuman] = useState<boolean>(false)
     const [emptyField, setEmptyField] = useState<boolean | undefined>(false)
+    const [errorStatus, setErrorStatus] = useState("")
 
     const locations = createListCollection({
         items: [
@@ -83,13 +89,14 @@ const RegisterPage = () => {
     const handleSubmitForm = (data: UserData) => {
 
         if (!checkObjKey(data, ['files'])) {
+            setErrorStatus("Please fill the required fields")
             return
         }
 
         setEmptyField(false)
 
         if (!isHuman) {
-            alert("Please solve the captcha")
+            setErrorStatus("Please solve the captcha")
             return
         }
 
@@ -122,9 +129,10 @@ const RegisterPage = () => {
               const data: ApiResponse = await response.json();
         
               if (data.success) {
-                alert("Upload Successful")
+                setErrorStatus("Upload Successful")
                 navigate(0)
               } else {
+                setErrorStatus(data.message)
                 console.error("API returned an error or success is false.");
               }
             } catch (error) {
@@ -140,6 +148,10 @@ const RegisterPage = () => {
         alignItems={"start"}
         flexDir={"column"}
         >
+        <ButtonlessPopup dialogTitle={"Message"} dialogButtonText='Ok' openProp={errorStatus !== ""} onClickFunc={() => setErrorStatus("")}>
+            <Text>{errorStatus}</Text>
+        </ButtonlessPopup>
+
           <Text
           fontWeight={"bold"}
           fontSize={"5vw"}

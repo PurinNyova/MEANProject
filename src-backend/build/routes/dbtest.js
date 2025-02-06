@@ -72,6 +72,10 @@ router.post("/", upload.array('files'), async (request, response) => {
     }
     catch (error) {
         console.error("Error in adding new user", error);
+        if (error.name === 'MongoServerError' && error.code === 11000) {
+            response.status(400).send({ success: false, message: 'User already exists!' });
+            return;
+        }
         response.status(500).json({ success: false, message: "there has been an error in adding new user" });
     }
 });

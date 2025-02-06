@@ -146,7 +146,7 @@ const ListPage: React.FC = () => {
         </form>
       </Flex>
 
-      <Table.ScrollArea borderWidth="1px" w={"100%"} mt={"40px"} maxW={"1000px"}>
+      <Table.ScrollArea borderWidth="1px" w={"100%"} mt={"40px"} maxH={"2000px"}>
         <Table.Root size="md">
           <Table.Header>
             <Table.Row>
