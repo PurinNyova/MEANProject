@@ -15,9 +15,9 @@ const connectDB = async () => {
 connectDB();
 
 const newUser = new AdminSchema({
-    name: "fuckhead",
-    posisi: "ground",
-    email: "fuckhead@fckhead.com",
+    name: "purinnyova",
+    posisi: "admin",
+    email: "purinnyova@fuckhead.com",
     password: "123456"
 });
 

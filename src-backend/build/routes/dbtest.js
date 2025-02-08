@@ -57,7 +57,6 @@ router.get("/:param", async (request, response) => {
 });
 router.post("/", upload.array('files'), async (request, response) => {
     const user = request.body;
-    console.log(user);
     if (!user.name || !user.email || !user.npm || !user.kelas || !user.jurusan || !user.lokasiKampus || !user.tempatTanggalLahir || !user.kelamin || !user.alamat || !user.noHP || !user.posisi || !user.lastIPK) {
         response.status(400).json({ success: false, message: 'Invalid Body: Is every required field populated?' });
         return;

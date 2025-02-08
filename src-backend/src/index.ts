@@ -58,7 +58,6 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.get('/login', async (req: Request, res: Response) => {
-  console.log(req.session)
   if (req.session.user) {
     res.status(200).json({ type: 'session', success: true, username: req.session.user });
   } else {
@@ -67,12 +66,10 @@ app.get('/login', async (req: Request, res: Response) => {
 });
 
 app.post('/login', express.urlencoded({ extended: true }), async (req: Request, res: Response) => {
-  console.log(req.session)
   if (req.session.user) {
     res.status(200).json({ type: 'session', success: true, username: req.session.user });
   } else {
     const { name, email, password } = req.body;
-    console.log(req.body)
     
     try {
       const adminQuery = await AdminSchema.findOne({ $and: [{ email: email }, { name: name }] });
@@ -82,8 +79,6 @@ app.post('/login', express.urlencoded({ extended: true }), async (req: Request, 
         
         if (check) {
           req.session.user = name;
-          console.log(name)
-          console.log(req.session.user)
           res.status(201).json({ type: 'login', success: true });
         } else {
           res.status(401).json({ type: 'login', success: false });

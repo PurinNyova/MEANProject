@@ -48,7 +48,6 @@ app.get('/', (req, res) => {
     }
 });
 app.get('/login', async (req, res) => {
-    console.log(req.session);
     if (req.session.user) {
         res.status(200).json({ type: 'session', success: true, username: req.session.user });
     }
@@ -57,21 +56,17 @@ app.get('/login', async (req, res) => {
     }
 });
 app.post('/login', express_1.default.urlencoded({ extended: true }), async (req, res) => {
-    console.log(req.session);
     if (req.session.user) {
         res.status(200).json({ type: 'session', success: true, username: req.session.user });
     }
     else {
         const { name, email, password } = req.body;
-        console.log(req.body);
         try {
             const adminQuery = await admin_model_1.default.findOne({ $and: [{ email: email }, { name: name }] });
             if (adminQuery) {
                 const check = await (0, bcryptjs_1.compare)(password, adminQuery.password);
                 if (check) {
                     req.session.user = name;
-                    console.log(name);
-                    console.log(req.session.user);
                     res.status(201).json({ type: 'login', success: true });
                 }
                 else {

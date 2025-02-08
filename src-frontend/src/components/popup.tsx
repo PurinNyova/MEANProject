@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 
 interface popupProps {
     buttonText?: string;
+    buttonColor?: string;
     dialogTitle?: string;
     children?: ReactNode;
     dialogButtonText?: string;
@@ -13,6 +14,7 @@ interface popupProps {
 
 const popup: React.FC<popupProps> = ({
     buttonText,
+    buttonColor,
     dialogTitle,
     children,
     dialogButtonText,
@@ -23,7 +25,7 @@ const popup: React.FC<popupProps> = ({
   return (
     <DialogRoot modal closeOnInteractOutside={false}>
       <DialogTrigger asChild>
-        <Button bg={buttonBg}>
+        <Button bg={buttonBg} color={buttonColor}>
           {buttonText}
         </Button>
       </DialogTrigger>

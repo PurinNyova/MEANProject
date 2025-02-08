@@ -155,7 +155,7 @@ const DashboardPage: React.FC = () => {
                             dialogButtonText='Delete' buttonBg={"red"}
                             onClickFunc={() => handleDelete(item.npm.toString())}><Text>If you decide to continue, this process will be irreversible</Text></Popup>
                             <Popup buttonText='Edit' dialogTitle='Edit the Fields below'
-                            dialogButtonText='Save' buttonBg={"yellow"}
+                            dialogButtonText='Save' buttonBg={"yellow"} buttonColor={"black"}
                             onClickFunc={() => handleDelete(item.npm.toString())}>
                                 <Text>If you decide to continue, this process will be irreversible</Text>
                                     <EditModal></EditModal>

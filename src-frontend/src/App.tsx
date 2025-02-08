@@ -1,7 +1,7 @@
 //import { useState } from 'react'
 //import reactLogo from './assets/react.svg'
 //import viteLogo from '/vite.svg'
-import { Box } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import Navbar from "./components/navbar";
@@ -9,9 +9,10 @@ import AboutPage from "./pages/AboutPage";
 import ListPage from "./pages/ListPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
-import { ReactNode, useEffect, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import DashboardPage from "./pages/DashboardPage";
 import Loader from "./components/Loader";
+import ButtonlessPopup from "./components/buttonlessPopup";
 
 export type ApiResponse = {
   type?: string; // Users keyed by string indices and `success` boolean
@@ -31,10 +32,39 @@ const Page: React.FC<PageProps> = (props) => {
   return props.children;
 };
 
+interface DataContextType {
+  errorStatus?: string;
+  setErrorStatus?: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export const DataContext = createContext<DataContextType | undefined>(undefined);
+
+interface dataProviderProp {
+  children: ReactNode; 
+}
+
+export const DataProvider: React.FC<dataProviderProp> = ({children}) => {
+  const [errorStatus, setErrorStatus] = useState("");
+return (
+<DataContext.Provider value={{ errorStatus, setErrorStatus }}>
+  {children}
+</DataContext.Provider>
+);
+}
+
+export const useDataContext = (): DataContextType => {
+  const context = useContext(DataContext);
+  if (context === undefined) {
+    throw new Error("useDataContext must be used within a DataProvider");
+  }
+  return context;
+}
+
 function App() {
   const location = useLocation()
   const [sessionCheck, setSessionCheck] = useState(false)
   const [loading, setLoading] = useState(true)
+  const {errorStatus, setErrorStatus} = useDataContext()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -70,6 +100,10 @@ function App() {
     gradientFrom={{base:"purple.100", _dark:"purple.950"}}
     gradientTo={{base:"purple.300", _dark:"purple.800"}}
     transitionProperty={"background"} transitionDuration={"fast"}>
+    
+    <ButtonlessPopup dialogTitle={"Message"} dialogButtonText='Ok' openProp={errorStatus !== ""} onClickFunc={() => setErrorStatus("")}>
+            <Text>{errorStatus}</Text>
+        </ButtonlessPopup>
      <Navbar sessionCheck={sessionCheck}/>
      <Routes>
       <Route path='/' element={

@@ -2,17 +2,50 @@ import { Button, Container, Flex, HStack, Link, Text } from '@chakra-ui/react';
 import { ColorModeButton } from './ui/color-mode';
 import SideBar from './sidebar';
 import { useNavigate } from 'react-router-dom';
+import ButtonlessPopup from './buttonlessPopup';
+import { useState } from 'react';
 
 interface navSess {
   sessionCheck?: boolean
+}
+
+interface ApiResponse {
+    success: string;
+    type: string;
 }
 
 const navbar: React.FC<navSess> = ({sessionCheck}) => {
 
   const navigate = useNavigate();
 
+  const [errorStatus, setErrorStatus] = useState("")
+
+  const handleLogout = async () => {
+    try {
+            let url = import.meta.env.VITE_PROXY+"logout";
+            const response = await fetch(url, {credentials: 'include', method: 'POST'});
+            const data: ApiResponse = await response.json();
+            console.log(data.success, data.type)
+      
+            if (data.success && data.type === 'logout') {
+              navigate('/')
+              navigate(0)
+            } else {
+              console.error("No session");
+              setErrorStatus("No Session")
+            }
+          } catch (error) {
+            console.error("Error fetching data:", error);
+          }
+        }
+
   return (
     <Container maxW={"90vw"} px={4} paddingTop={"2vh"}>
+
+        <ButtonlessPopup dialogTitle={"Message"} dialogButtonText='Ok' openProp={errorStatus !== ""} onClickFunc={() => setErrorStatus("")}>
+            <Text>{errorStatus}</Text>
+        </ButtonlessPopup>
+
         <Flex
         h={16}
         alignItems={"center"}
@@ -55,6 +88,10 @@ const navbar: React.FC<navSess> = ({sessionCheck}) => {
                 <Button bg={"green.400"} onClick={() => navigate('/')}>Home</Button>
             )}
             <Button bg={"purple.400"} onClick={() => navigate('/about')}>About</Button>
+            {sessionCheck === true && (
+                <Button bg={{base:"purple.800", _dark:"white"}} onClick={() => handleLogout()}>Logout</Button>
+            )}
+            
             <ColorModeButton></ColorModeButton>
 
         </HStack>

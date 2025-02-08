@@ -13,11 +13,34 @@ import { CloseButton } from '../components/ui/close-button';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { useNavigate } from 'react-router-dom';
 import ButtonlessPopup from '../components/buttonlessPopup';
+import { useDataContext } from '../App';
 
-interface ApiResponse {
+export interface ApiResponse {
     success: boolean;
     message: string;
 }
+
+export const locations = createListCollection({
+    items: [
+      { label: "Kalimalang", value: "kalimalang" },
+      { label: "Depok", value: "depok" },
+      { label: "Karawaci", value: "karawaci" },
+    ],
+  })
+
+export const positions = createListCollection({
+    items: [
+      { label: "Asisten", value: "asisten" },
+      { label: "Programmer", value: "programmer" },
+    ],
+  })
+
+export const kelamins = createListCollection({
+    items: [
+      { label: "Male", value: "male" },
+      { label: "Female", value: "female" },
+    ],
+  })
 
 const RegisterPage = () => {
 
@@ -27,29 +50,8 @@ const RegisterPage = () => {
 
     const [isHuman, setIsHuman] = useState<boolean>(false)
     const [emptyField, setEmptyField] = useState<boolean | undefined>(false)
-    const [errorStatus, setErrorStatus] = useState("")
+    const {errorStatus, setErrorStatus} = useDataContext()
 
-    const locations = createListCollection({
-        items: [
-          { label: "Kalimalang", value: "kalimalang" },
-          { label: "Depok", value: "depok" },
-          { label: "Karawaci", value: "karawaci" },
-        ],
-      })
-
-      const positions = createListCollection({
-        items: [
-          { label: "Asisten", value: "asisten" },
-          { label: "Programmer", value: "programmer" },
-        ],
-      })
-
-      const kelamins = createListCollection({
-        items: [
-          { label: "Male", value: "male" },
-          { label: "Female", value: "female" },
-        ],
-      })
 
     const [userData, setUserData] = useState<UserData>({
         name: "",

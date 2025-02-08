@@ -79,7 +79,6 @@ router.get("/:param", async (request: Request, response: Response) => {
 
 router.post("/", upload.array('files'), async (request: Request, response: Response) => {
     const user: UserInput= request.body
-    console.log(user)
 
     if (!user.name || !user.email || !user.npm || !user.kelas || !user.jurusan || !user.lokasiKampus || !user.tempatTanggalLahir || !user.kelamin || !user.alamat || !user.noHP || !user.posisi || !user.lastIPK) {
         response.status(400).json({ success: false, message: 'Invalid Body: Is every required field populated?' });
