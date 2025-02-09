@@ -1,10 +1,11 @@
 import { Box, Button, Container, Flex, For, Group, HStack, Input, Link, Table, Text } from '@chakra-ui/react'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate} from 'react-router-dom';
 import { UserData, DomainSelect, ApiResponse, formStyle } from './ListPage';
 import { PanelContext } from '../App';
 import Popup from '../components/popup';
 import EditModal from '../components/editModal';
+import React from 'react';
 
 interface postResponse {
     message: string;
@@ -75,6 +76,8 @@ const DashboardPage: React.FC = () => {
     const [userDatabase, setUserDatabase] = useState<UserData[]>([]);
     const [query, setQuery] = useState("")
     const [selectedParam, setSelectedParam] = useState("name")
+    const queryRef = useRef("")
+    queryRef.current = query
 
     const fetchData = async (param?: string, queryValue?: string) => {
         try {
@@ -101,13 +104,17 @@ const DashboardPage: React.FC = () => {
         fetchData()
     }, [location]);
 
+    useEffect(() => {
+        handleSearch()
+        console.log(userDatabase)
+    }, [query])
+
     // Example function to handle search
-    const handleSearch = (event: React.FormEvent) => {
-        event.preventDefault()
+    const handleSearch = async () => {
         // Assuming you set the `param` and `query` values from some input elements
         const param = selectedParam; // example param
-        const queryValue = query; // using state for the query value
-        fetchData(param, queryValue);
+        const queryValue = queryRef.current.toString(); // using state for the query value
+        await fetchData(param, queryValue);
     }
 
     const handleDelete = async (npm: string) => {
@@ -120,7 +127,7 @@ const DashboardPage: React.FC = () => {
               const data: postResponse = await response.json();
         
               if (data.success) {
-                navigate(0)
+                setErrorStatus("Delete Success")
               } else {
                 console.error("API returned an error or success is false.");
               }
@@ -137,10 +144,10 @@ const DashboardPage: React.FC = () => {
         }));
     };
 
-    const checkObjKey = (obj: UserData, exceptions: String[]) => {
+    const checkObjKey = (obj: UserData) => {
         for (let key in obj) {
         const dataKey = key as keyof UserData
-          if (!exceptions.includes(dataKey) && (obj[dataKey] === "" || obj[dataKey] === 0)) {
+          if (obj[dataKey] === "") {
             setEmptyField(true)
             return false
           }
@@ -150,7 +157,7 @@ const DashboardPage: React.FC = () => {
 
     const handleSubmitForm = (data: UserData) => {
     
-            if (!checkObjKey(data, ['files'])) {
+            if (!checkObjKey(data)) {
                 setErrorStatus("Please fill the required fields")
                 return
             }
@@ -172,16 +179,17 @@ const DashboardPage: React.FC = () => {
     
             const submission = async () => {
              try {
-                  let url = import.meta.env.VITE_PROXY+"/api/db";
+                  let url = import.meta.env.VITE_PROXY+"/api/db?edit=true";
                   const response = await fetch(url, {
                     method: 'POST',
+                    credentials: 'include',
                     body: formData
                   });
                   const data: postResponse = await response.json();
             
                   if (data.success) {
                     setErrorStatus("Edit Successful")
-                    navigate(0)
+                    fetchData()
                   } else {
                     setErrorStatus(data.message)
                     console.error("API returned an error or success is false.");
@@ -211,7 +219,7 @@ const DashboardPage: React.FC = () => {
             Here you can see all currently enrolled students
             </Text>
 
-            <form onSubmit={handleSearch} style={formStyle}>
+            <form onSubmit={(event) => {event.preventDefault(); handleSearch()}} style={formStyle}>
             <Box
             overflow={"visible"}
             w={{base:"100%", md:"50%"}} h={{base:"40px", md:"50px"}} pl={"10px"}
@@ -222,7 +230,7 @@ const DashboardPage: React.FC = () => {
                 <Input placeholder='Query'
                 w={"100%"} unstyled h={"95%"} background={"none"} focusVisibleRing={"none"}
                 color={"black"}
-                onChange={(data) => {setQuery(data.target.value); handleSearch(data)}}/>
+                onChange={(data) => {setQuery(data.target.value)}}/>
                 <DomainSelect onSelectValue={setSelectedParam}/>
                 </Group>
             

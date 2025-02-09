@@ -7,6 +7,7 @@ import path from "path";
 const router = Router();
 
 interface UserInput {
+    _id?: string;
     name: string;
     npm: number;
     kelas: string;
@@ -79,6 +80,29 @@ router.get("/:param", async (request: Request, response: Response) => {
 
 router.post("/", upload.array('files'), async (request: Request, response: Response) => {
     const user: UserInput= request.body
+    const { _id, ...userExcl } = user
+    const query = request.query.edit
+
+    if (query === 'true') {
+        if (!request.session.user) {
+            response.status(401).json({ success: false, message: 'Unauthorized Edit'})
+            return
+        }
+        if (!user.name || !user.email || !user.npm || !user.kelas || !user.jurusan || !user.lokasiKampus || !user.tempatTanggalLahir || !user.kelamin || !user.alamat || !user.noHP || !user.posisi || !user.lastIPK) {
+            response.status(400).json({ success: false, message: 'Invalid Body: Is every required field populated?' });
+            return
+        }
+        
+        try {
+            const updated = await UserSchema.findOneAndUpdate({ _id: user._id }, userExcl, { returnOriginal: false });
+            response.status(201).json({ success: true, message: "Update success", type: "update", ...updated})
+            return
+        } catch (error: any) {
+            response.status(500).json({ success: false, message: "Update Failure", type: "update"})
+            return
+        }
+
+    }
 
     if (!user.name || !user.email || !user.npm || !user.kelas || !user.jurusan || !user.lokasiKampus || !user.tempatTanggalLahir || !user.kelamin || !user.alamat || !user.noHP || !user.posisi || !user.lastIPK) {
         response.status(400).json({ success: false, message: 'Invalid Body: Is every required field populated?' });

@@ -18,9 +18,9 @@ const connectDB = async () => {
 };
 connectDB();
 const newUser = new admin_model_1.default({
-    name: "fuckhead",
-    posisi: "ground",
-    email: "fuckhead@fckhead.com",
+    name: "purinnyova",
+    posisi: "admin",
+    email: "purinnyova@fuckhead.com",
     password: "123456"
 });
 bcryptjs_1.default.genSalt(10, (err, salt) => {

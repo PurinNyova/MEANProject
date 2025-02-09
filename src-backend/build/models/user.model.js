@@ -10,7 +10,7 @@ const userDatabaseSchema = new mongoose_1.default.Schema({
         required: true
     },
     npm: {
-        type: Number,
+        type: String,
         required: true,
         unique: true
     },
