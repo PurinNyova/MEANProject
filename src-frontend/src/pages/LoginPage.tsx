@@ -1,9 +1,9 @@
 import { Text, Button, Input, Flex, Fieldset, Stack } from '@chakra-ui/react'
 import { Container } from '@chakra-ui/react/container'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { formStyle } from './ListPage'
 import { Field } from '../components/ui/field';
-import { ApiResponse } from '../App';
+import { ApiResponse, PanelContext } from '../App';
 import { useNavigate } from 'react-router-dom';
 
 interface LoginInterface {
@@ -15,6 +15,9 @@ interface LoginInterface {
 const LoginPage = () => {
 
     const navigate = useNavigate();
+
+    const [emptyField, setEmptyField] = useState<boolean | undefined>(false)
+    const {setErrorStatus} = useContext(PanelContext)
 
     const [loginInterface, setLoginInterface] = useState<LoginInterface>({
       name: "",
@@ -31,7 +34,24 @@ const LoginPage = () => {
         console.log(loginInterface)
     };
 
+    const checkObjKey = (obj: LoginInterface) => {
+            for (let key in obj) {
+            const dataKey = key as keyof LoginInterface
+              if (obj[dataKey] === "") {
+                setEmptyField(true)
+                return false
+              }
+            }
+            return true
+          }
+
     const handleSubmitForm = async (data: LoginInterface) => {
+
+        if (!checkObjKey(data)) {
+            setErrorStatus("Please fill the required fields")
+            return
+        }
+
       let urlEncodedData = new URLSearchParams();
   
       for (const key in data) {
@@ -67,19 +87,19 @@ const LoginPage = () => {
   };
   
     return (
-      <Container maxW={"90vw"} px={4} py={{base: "100px", sm:"50px"}}>
+      <Container maxW={"90vw"} px={4} py={{base: "50px", sm:"100px"}}>
         <Flex
         alignItems={"start"}
         flexDir={"column"}
         >
           <Text
           fontWeight={"bold"}
-          fontSize={"5vw"}
-          maxW={"70%"}>
+          fontSize={{base:"8vw", sm:"5vw"}}
+        w={{base:"90%", sm:"70%"}}>
             Login
           </Text>
   
-          <Text maxW={"50%"} fontSize={"2vw"} pb={"2vw"}>
+          <Text w={{base:"80%", sm:"50%"}} fontSize={{base:"3vw", sm:"2vw"}} pb={"4vh"}>
           Administration Login
           </Text>
   
@@ -95,7 +115,7 @@ const LoginPage = () => {
                 </Stack>
 
                 <Fieldset.Content>
-                    <Field label="Nama">
+                    <Field label="Nama" invalid={(emptyField && loginInterface.name !== "")} >
                         <Input color={"black"} name='name' placeholder='Nama' w={"100%"} unstyled h={"50px"}
                         focusRingColor={"none"} pl={"10px"}
                         backgroundColor={"white"} borderRadius={"20px"}
@@ -104,14 +124,14 @@ const LoginPage = () => {
 
                     </Field>
 
-                    <Field label="Email address">
+                    <Field label="Email address" invalid={(emptyField && loginInterface.email !== "")}>
                         <Input name='email' placeholder='Email Address' w={"100%"} unstyled h={"50px"}
                         focusRingColor={"none"} pl={"10px"} color={"black"}
                         backgroundColor={"white"} borderRadius={"20px"}
                         onChange={handleInputChange}/>
                     </Field>
 
-                    <Field label="Password">
+                    <Field label="Password" invalid={(emptyField && loginInterface.password !== "")}>
                         <Input name='password' placeholder='Password' w={"100%"} unstyled h={"50px"}
                         focusRingColor={"none"} pl={"10px"} color={"black"}
                         backgroundColor={"white"} borderRadius={"20px"}

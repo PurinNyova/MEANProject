@@ -3,20 +3,19 @@ import { ColorModeButton } from './ui/color-mode';
 import SideBar from './sidebar';
 import { useNavigate } from 'react-router-dom';
 import ButtonlessPopup from './buttonlessPopup';
-import { useState } from 'react';
-
-interface navSess {
-  sessionCheck?: boolean
-}
+import { useContext, useState } from 'react';
+import { PanelContext } from '../App';
 
 interface ApiResponse {
     success: string;
     type: string;
 }
 
-const navbar: React.FC<navSess> = ({sessionCheck}) => {
+const navbar: React.FC = () => {
 
   const navigate = useNavigate();
+
+  const { sessionCheck } = useContext(PanelContext)
 
   const [errorStatus, setErrorStatus] = useState("")
 

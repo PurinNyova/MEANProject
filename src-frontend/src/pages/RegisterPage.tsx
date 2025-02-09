@@ -6,14 +6,14 @@ import { Container, Flex, Text, Box, Input, Button,
 import { formStyle } from './ListPage';
 import { Field } from '../components/ui/field';
 import { UserData } from './ListPage';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { NumberInputField } from '../components/ui/number-input';
 import { FileUploadDropzone, FileUploadList } from '../components/ui/file-upload';
 import { CloseButton } from '../components/ui/close-button';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { useNavigate } from 'react-router-dom';
 import ButtonlessPopup from '../components/buttonlessPopup';
-import { useDataContext } from '../App';
+import { PanelContext } from '../App';
 
 export interface ApiResponse {
     success: boolean;
@@ -50,7 +50,7 @@ const RegisterPage = () => {
 
     const [isHuman, setIsHuman] = useState<boolean>(false)
     const [emptyField, setEmptyField] = useState<boolean | undefined>(false)
-    const {errorStatus, setErrorStatus} = useDataContext()
+    const {errorStatus, setErrorStatus} = useContext(PanelContext)
 
 
     const [userData, setUserData] = useState<UserData>({
@@ -145,7 +145,7 @@ const RegisterPage = () => {
     }
 
     return (
-      <Container maxW={"90vw"} px={4} py={{base: "100px", sm:"50px"}}>
+      <Container maxW={"90vw"} px={4} py={{base: "50px", sm:"100px"}}>
         <Flex
         alignItems={"start"}
         flexDir={"column"}
@@ -156,12 +156,12 @@ const RegisterPage = () => {
 
           <Text
           fontWeight={"bold"}
-          fontSize={"5vw"}
-          maxW={"70%"}>
+          fontSize={{base:"8vw", sm:"5vw"}}
+          w={{base:"90%", sm:"70%"}}>
             Registration
           </Text>
   
-          <Text maxW={"50%"} fontSize={"2vw"} pb={"2vw"}>
+          <Text w={{base:"80%", sm:"50%"}} fontSize={{base:"3vw", sm:"2vw"}} pb={"4vh"}>
           Psychology Lab Asistant and Programmer Registration
           </Text>
   

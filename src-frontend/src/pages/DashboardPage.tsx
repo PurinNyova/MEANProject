@@ -1,46 +1,77 @@
 import { Box, Button, Container, Flex, For, Group, HStack, Input, Link, Table, Text } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { useLocation, useNavigate} from 'react-router-dom';
 import { UserData, DomainSelect, ApiResponse, formStyle } from './ListPage';
-import { ApiResponse as LoginCheck } from '../App';
+import { PanelContext } from '../App';
 import Popup from '../components/popup';
 import EditModal from '../components/editModal';
 
-interface deleteResponse {
+interface postResponse {
     message: string;
     success: boolean;
 }
+
+interface EditContextType {
+    user: UserData
+    handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    setUser: React.Dispatch<React.SetStateAction<UserData>>
+    emptyField: boolean;
+    loading: boolean;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export const EditContext = createContext<EditContextType>({
+    user: {
+        name: "",
+        npm: 0,
+        kelas: "",
+        jurusan: "",
+        lokasiKampus: "",
+        tempatTanggalLahir: "",
+        kelamin: "",
+        alamat: "",
+        noHP: 0,
+        email: "",
+        posisi: "",
+        lastIPK: 0,
+        files: ""
+    },
+    handleInputChange: () => {},
+    setUser: () => {},
+    emptyField: false,
+    loading: true,
+    setLoading: () => {}
+});
 
 const DashboardPage: React.FC = () => {
 
     const navigate = useNavigate()
     const location = useLocation()
 
-    const [sessionCheck, setSessionCheck] = useState(false)
-    const [username, setUsername] = useState("")
+    const { sessionCheck, username, setErrorStatus } = useContext(PanelContext)
 
-    const fetchLogin = async () => {
-          try {
-            let url = import.meta.env.VITE_PROXY+"login";
-            const response = await fetch(url, {credentials: 'include'});
-            const data: LoginCheck = await response.json();
-            console.log(data.success, data.type)
-      
-            if (data.success && data.type === 'session' && data.username) {
-              setSessionCheck(true)
-              setUsername(data.username)
-            } else {
-                alert(sessionCheck)
-                navigate('/')
-                console.error("No session");
-            }
-          } catch (error) {
-            console.error("Error fetching data:", error);
-          }
-        };
-    fetchLogin()
+    if (!sessionCheck) {
+        navigate('/')
+    }
 
+    const [user, setUser] = useState<UserData>({
+        name: "",
+        npm: 0,
+        kelas: "",
+        jurusan: "",
+        lokasiKampus: "",
+        tempatTanggalLahir: "",
+        kelamin: "",
+        alamat: "",
+        noHP: 0,
+        email: "",
+        posisi: "",
+        lastIPK: 0,
+        files: ""
+    });
 
+    const [emptyField, setEmptyField] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [userDatabase, setUserDatabase] = useState<UserData[]>([]);
     const [query, setQuery] = useState("")
     const [selectedParam, setSelectedParam] = useState("name")
@@ -86,7 +117,7 @@ const DashboardPage: React.FC = () => {
                 method: 'POST',
                 credentials: 'include',
               })
-              const data: deleteResponse = await response.json();
+              const data: postResponse = await response.json();
         
               if (data.success) {
                 navigate(0)
@@ -98,8 +129,72 @@ const DashboardPage: React.FC = () => {
             }
     }
 
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setUser(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const checkObjKey = (obj: UserData, exceptions: String[]) => {
+        for (let key in obj) {
+        const dataKey = key as keyof UserData
+          if (!exceptions.includes(dataKey) && (obj[dataKey] === "" || obj[dataKey] === 0)) {
+            setEmptyField(true)
+            return false
+          }
+        }
+        return true
+      }
+
+    const handleSubmitForm = (data: UserData) => {
+    
+            if (!checkObjKey(data, ['files'])) {
+                setErrorStatus("Please fill the required fields")
+                return
+            }
+    
+            setEmptyField(false)
+    
+            let formData = new FormData();
+            for (const key in data) {
+                console.log(key)
+                if (data.hasOwnProperty(key)) {
+                  const dataKey = key as keyof UserData; // Use keyof operator
+                    const value = data[dataKey]?.toString() || '';
+                    formData.append(key, value);
+                }
+            }
+            for (var pair of formData.entries()) {
+                console.log(pair[0]+ ', ' + pair[1]); 
+            }
+    
+            const submission = async () => {
+             try {
+                  let url = import.meta.env.VITE_PROXY+"/api/db";
+                  const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                  });
+                  const data: postResponse = await response.json();
+            
+                  if (data.success) {
+                    setErrorStatus("Edit Successful")
+                    navigate(0)
+                  } else {
+                    setErrorStatus(data.message)
+                    console.error("API returned an error or success is false.");
+                  }
+                } catch (error) {
+                  console.error("Error fetching data:", error);
+                }
+            }
+            submission()
+        }
+
     return (
-        <Container maxW={"90vw"} px={4} py={{base: "100px", sm:"50px"}} transitionDuration={"slow"} transitionProperty={"all"}>
+        <Container maxW={"90vw"} px={4} py={{base: "50px", sm:"100px"}} transitionDuration={"slow"} transitionProperty={"all"}>
         <Flex
         alignItems={"start"}
         flexDir={"column"}
@@ -107,12 +202,12 @@ const DashboardPage: React.FC = () => {
 
             <Text
             fontWeight={"bold"}
-            fontSize={"5vw"}
-            maxW={"70%"}>
+            fontSize={{base:"8vw", sm:"5vw"}}
+            w={{base:"90%", sm:"70%"}}>
             Welcome {username}
             </Text>
 
-            <Text maxW={"50%"} fontSize={"2vw"} pb={"2vw"}>
+            <Text w={{base:"80%", sm:"50%"}} fontSize={{base:"3vw", sm:"2vw"}} pb={"4vh"}>
             Here you can see all currently enrolled students
             </Text>
 
@@ -154,12 +249,14 @@ const DashboardPage: React.FC = () => {
                             <Popup buttonText='Delete' dialogTitle='Are you sure?'
                             dialogButtonText='Delete' buttonBg={"red"}
                             onClickFunc={() => handleDelete(item.npm.toString())}><Text>If you decide to continue, this process will be irreversible</Text></Popup>
-                            <Popup buttonText='Edit' dialogTitle='Edit the Fields below'
-                            dialogButtonText='Save' buttonBg={"yellow"} buttonColor={"black"}
-                            onClickFunc={() => handleDelete(item.npm.toString())}>
-                                <Text>If you decide to continue, this process will be irreversible</Text>
-                                    <EditModal></EditModal>
+                            <EditContext.Provider value={{user, handleInputChange, emptyField, setUser, loading, setLoading}}>
+                                <Popup buttonText='Edit' dialogTitle='Edit the Fields below'
+                                dialogButtonText='Save' buttonBg={"yellow"} buttonColor={"black"}
+                                onClickFunc={() => handleSubmitForm(user)}>
+                                    <Text>If you decide to continue, this process will be irreversible</Text>
+                                        <EditModal onStartFunction={() => {setUser(item)}}/>
                                 </Popup>
+                            </EditContext.Provider>
                         </HStack>
                     </Table.Cell>
                     <Table.Cell>{item.name}</Table.Cell>

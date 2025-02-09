@@ -54,7 +54,7 @@ export type UserData = {
 };
 
 export type ApiResponse = {
-  [key: string]: UserData | boolean; // Users keyed by string indices and `success` boolean
+  [key: string]: UserData | boolean;
   success: boolean;
 };
 
@@ -110,7 +110,7 @@ const ListPage: React.FC = () => {
   
 
   return (
-    <Container maxW={"90vw"} px={4} py={{base: "100px", sm:"50px"}}>
+    <Container maxW={"90vw"} px={4} py={{base: "50px", sm:"100px"}}>
       <Flex
       alignItems={"start"}
       flexDir={"column"}

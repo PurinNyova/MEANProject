@@ -32,9 +32,9 @@ const popup: React.FC<popupProps> = ({
       <DialogPositioner>
           <DialogContent maxH={"90vh"}>
             <DialogHeader>
-              <DialogTitle>{dialogTitle}</DialogTitle>
+              <DialogTitle maxW={"100px"}>{dialogTitle}</DialogTitle>
             </DialogHeader>
-            <DialogBody>
+            <DialogBody overflow={"scroll"}>
               {children}
             </DialogBody>
             <DialogFooter>

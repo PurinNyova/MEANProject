@@ -9,7 +9,7 @@ import AboutPage from "./pages/AboutPage";
 import ListPage from "./pages/ListPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import DashboardPage from "./pages/DashboardPage";
 import Loader from "./components/Loader";
 import ButtonlessPopup from "./components/buttonlessPopup";
@@ -32,39 +32,26 @@ const Page: React.FC<PageProps> = (props) => {
   return props.children;
 };
 
-interface DataContextType {
-  errorStatus?: string;
-  setErrorStatus?: React.Dispatch<React.SetStateAction<string>>;
+interface ErrorContext {
+  errorStatus: string;
+  setErrorStatus: React.Dispatch<React.SetStateAction<string>>;
+  sessionCheck: boolean;
+  username: string;
 }
 
-export const DataContext = createContext<DataContextType | undefined>(undefined);
+export const PanelContext = createContext<ErrorContext>({
+  errorStatus: "",
+  setErrorStatus: () => {},
+  sessionCheck: false,
+  username: ""
+})
 
-interface dataProviderProp {
-  children: ReactNode; 
-}
-
-export const DataProvider: React.FC<dataProviderProp> = ({children}) => {
-  const [errorStatus, setErrorStatus] = useState("");
-return (
-<DataContext.Provider value={{ errorStatus, setErrorStatus }}>
-  {children}
-</DataContext.Provider>
-);
-}
-
-export const useDataContext = (): DataContextType => {
-  const context = useContext(DataContext);
-  if (context === undefined) {
-    throw new Error("useDataContext must be used within a DataProvider");
-  }
-  return context;
-}
-
-function App() {
+const App = () => {
   const location = useLocation()
   const [sessionCheck, setSessionCheck] = useState(false)
   const [loading, setLoading] = useState(true)
-  const {errorStatus, setErrorStatus} = useDataContext()
+  const [errorStatus, setErrorStatus] = useState("")
+  const [username, setUsername] = useState("")
 
   useEffect(() => {
     const fetchData = async () => {
@@ -77,6 +64,7 @@ function App() {
   
         if (data.success && data.type === 'session' && data.username) {
           setSessionCheck(true)
+          setUsername(data.username)
         } else {
           console.error("No session");
         }
@@ -104,43 +92,45 @@ function App() {
     <ButtonlessPopup dialogTitle={"Message"} dialogButtonText='Ok' openProp={errorStatus !== ""} onClickFunc={() => setErrorStatus("")}>
             <Text>{errorStatus}</Text>
         </ButtonlessPopup>
-     <Navbar sessionCheck={sessionCheck}/>
-     <Routes>
-      <Route path='/' element={
-        <Page title="Home">
-        <HomePage />
-        </Page>} />
-      <Route path='/about' element={
-        <Page title="About">
-          <AboutPage />
-        </Page>
-      } />
-      <Route path='/list' element={
-        <Page title="Enrolled Students">
-          <ListPage />
-        </Page>
-      }/>
-      <Route path='/list/:param' element={
-        <Page title="Enrolled Students">
-          <ListPage />
-        </Page>
-      }/>
-      <Route path='/register' element={
-        <Page title="Register">
-          <RegisterPage />
-        </Page>
-      }/>
-      <Route path='/login' element={
-        <Page title="Login">
-          <LoginPage />
-        </Page>
-      }/>
-      <Route path='/dashboard' element={
-        <Page title="Dashboard">
-          <DashboardPage/>
-        </Page>
-      }/>
-     </Routes>
+     <PanelContext.Provider value={{errorStatus, setErrorStatus, sessionCheck, username}}>
+       <Navbar/>
+       <Routes>
+        <Route path='/' element={
+          <Page title="Home">
+          <HomePage />
+          </Page>} />
+        <Route path='/about' element={
+          <Page title="About">
+            <AboutPage />
+          </Page>
+        } />
+        <Route path='/list' element={
+          <Page title="Enrolled Students">
+            <ListPage />
+          </Page>
+        }/>
+        <Route path='/list/:param' element={
+          <Page title="Enrolled Students">
+            <ListPage />
+          </Page>
+        }/>
+        <Route path='/register' element={
+          <Page title="Register">
+            <RegisterPage />
+          </Page>
+        }/>
+        <Route path='/login' element={
+          <Page title="Login">
+            <LoginPage />
+          </Page>
+        }/>
+        <Route path='/dashboard' element={
+          <Page title="Dashboard">
+            <DashboardPage/>
+          </Page>
+        }/>
+       </Routes>
+     </PanelContext.Provider>
     </Box>
   )
 }
