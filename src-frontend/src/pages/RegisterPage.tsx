@@ -2,18 +2,20 @@ import { Container, Flex, Text, Box, Input, Button,
     Fieldset, Stack, SelectRoot, createListCollection, SelectTrigger,
     SelectValueText, SelectContent, SelectItem, NumberInputRoot, 
     FileUploadRoot,
-    FileUploadClearTrigger,} from '@chakra-ui/react';
+    FileUploadClearTrigger,
+    FileUploadHiddenInput} from '@chakra-ui/react';
 import { formStyle } from './ListPage';
 import { Field } from '../components/ui/field';
 import { UserData } from './ListPage';
 import { useContext, useState } from 'react';
 import { NumberInputField } from '../components/ui/number-input';
-import { FileUploadDropzone, FileUploadList } from '../components/ui/file-upload';
+import { FileUploadDropzone, FileUploadList, FileUploadTrigger } from '../components/ui/file-upload';
 import { CloseButton } from '../components/ui/close-button';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { useNavigate } from 'react-router-dom';
 import ButtonlessPopup from '../components/buttonlessPopup';
 import { PanelContext } from '../App';
+import { HiUpload } from 'react-icons/hi';
 
 export interface ApiResponse {
     success: boolean;
@@ -329,6 +331,12 @@ const RegisterPage = () => {
                             ...prevState,
                             ["Document"]: data.files
                         }))}>
+                            <FileUploadTrigger asChild>
+                                <Button size="sm" bg="white" color={"black"} borderRadius={"20px"}>
+                                <HiUpload /> Upload file
+                                </Button>
+                            </FileUploadTrigger>
+                            <FileUploadHiddenInput />
                             <FileUploadDropzone
                                 bg="white"
                                 color={"black"}

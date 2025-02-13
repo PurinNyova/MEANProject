@@ -201,6 +201,43 @@ const DashboardPage: React.FC = () => {
             submission()
         }
 
+        const exportCSV = () => {
+            const csvHeaders: (keyof UserData)[] = Object.keys(userDatabase[0]) as (keyof UserData)[];
+            const csvRows: string[] = [];
+          
+            // Add headers to the CSV rows
+            csvRows.push(csvHeaders.join(','));
+          
+            // Add data rows to the CSV
+            userDatabase.forEach(user => {
+              const row = csvHeaders.map(header => {
+                let value = user[header] !== undefined ? user[header] : ''; // Safely access user data
+          
+                // Replace commas with periods in the tempatTanggalLahir field
+                if (typeof value === 'string') {
+                  value = value.replace(/,/g, '.');
+                }
+          
+                return value;
+              });
+              csvRows.push(row.join(','));
+            });
+          
+            // Create a CSV string
+            const csvString = csvRows.join('\n');
+          
+            // Create a Blob for the CSV data
+            const blob = new Blob([csvString], { type: 'text/csv' });
+          
+            // Create a link to trigger the download
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'userDatabase.csv';
+          
+            // Programmatically click the link to trigger the download
+            link.click(); }
+        
+
     return (
         <Container maxW={"90vw"} px={4} py={{base: "50px", sm:"100px"}} transitionDuration={"slow"} transitionProperty={"all"}>
         <Flex
@@ -239,7 +276,8 @@ const DashboardPage: React.FC = () => {
             </form>
         </Flex>
 
-        <Table.ScrollArea borderWidth="1px" w={"100%"} mt={"40px"}>
+        <Box w={"100%"} mt={"40px"} flexDir={"column"}>
+        <Table.ScrollArea borderWidth="1px" w={"100%"}>
             <Table.Root size="md">
             <Table.Header>
                 <Table.Row>
@@ -291,8 +329,8 @@ const DashboardPage: React.FC = () => {
             </Table.Body>
             </Table.Root>
         </Table.ScrollArea>
-
-
+       <Button bg={{base:"white", _dark:"black"}} color={{base:"black", _dark:"white"}} w={"100%"} onClick={() => exportCSV()}>Export</Button>
+        </Box>
         </Container>
     )
 }
