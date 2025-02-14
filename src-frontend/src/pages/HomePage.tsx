@@ -15,12 +15,12 @@ const HomePage = () => {
       >
         <Text
         fontWeight={"bold"}
-        fontSize={{base:"8vw", sm:"5vw"}}
-        w={{base:"90%", sm:"70%"}}>
+        fontSize={{base:"10vw", md:"5vw"}}
+        w={{base:"100%", sm:"70%"}}>
           Welcome to<br></br>Student Registration
         </Text>
 
-        <Text w={{base:"80%", sm:"50%"}} fontSize={{base:"3vw", sm:"2vw"}} pb={"2vw"}>
+        <Text w={{base:"100%", md:"50%"}} fontSize={{base:"4vw", md:"2vw"}} pb={"2vw"}>
         Embark on Your Educational Journey: Register Now to Unlock Opportunities in Learning and Growth
         </Text>
 

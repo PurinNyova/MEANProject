@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
-import { Button, Card, Icon } from "@chakra-ui/react";
+import { Card, Icon } from "@chakra-ui/react";
+//import { Button } from "@chakra-ui/react";
 import { BsAsterisk, BsBook } from "react-icons/bs";
 import { MdOutlineSupportAgent } from "react-icons/md";
 import { useColorMode } from "./ui/color-mode";
@@ -22,9 +23,10 @@ const CardBody: React.FC<CardBodyProps> = ({ icon, title, description }) => {
 
 const CardFooter: React.FC = () => (
   <Card.Footer justifyContent="flex-end">
-    <Button bg={"purple.400"}>View</Button>
   </Card.Footer>
 );
+
+// <Button bg={"purple.400"}>View</Button>
 
 export const Cards1: React.FC = () => {
     const { colorMode } = useColorMode();

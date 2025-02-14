@@ -117,12 +117,12 @@ const ListPage: React.FC = () => {
       >
         <Text
         fontWeight={"bold"}
-        fontSize={{base:"8vw", sm:"5vw"}}
-        w={{base:"90%", sm:"70%"}}>
+        fontSize={{base:"10vw", md:"5vw"}}
+        w={{base:"100%", sm:"70%"}}>
           Enrolled Students
         </Text>
 
-        <Text w={{base:"80%", sm:"50%"}} fontSize={{base:"3vw", sm:"2vw"}} pb={"2vw"}>
+        <Text w={{base:"100%", md:"50%"}} fontSize={{base:"4vw", md:"2vw"}} pb={"2vw"}>
         Here you can see all currently enrolled students
         </Text>
 
@@ -173,7 +173,7 @@ const ListPage: React.FC = () => {
                 <Table.Cell>{item.lastIPK}</Table.Cell>
                 <Table.Cell>
                   {item.files !== "no documents" ? (
-                    <Link href={`/api/cdn/${item.files}`}>
+                    <Link href={`${import.meta.env.VITE_PROXY}api/cdn/${item.files}`}>
                       <Button bg="purple.400">File</Button>
                     </Link>
                   ) : item.files}

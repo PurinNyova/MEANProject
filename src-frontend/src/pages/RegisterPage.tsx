@@ -125,7 +125,7 @@ const RegisterPage = () => {
 
         const submission = async () => {
          try {
-              let url = import.meta.env.VITE_PROXY+"/api/db";
+              let url = import.meta.env.VITE_PROXY+"api/db";
               const response = await fetch(url, {
                 method: 'POST',
                 body: formData
@@ -158,12 +158,12 @@ const RegisterPage = () => {
 
           <Text
           fontWeight={"bold"}
-          fontSize={{base:"8vw", sm:"5vw"}}
-          w={{base:"90%", sm:"70%"}}>
+          fontSize={{base:"10vw", md:"5vw"}}
+          w={{base:"100%", sm:"70%"}}>
             Registration
           </Text>
   
-          <Text w={{base:"80%", sm:"50%"}} fontSize={{base:"3vw", sm:"2vw"}} pb={"4vh"}>
+          <Text w={{base:"100%", md:"50%"}} fontSize={{base:"4vw", md:"2vw"}} pb={"4vh"}>
           Psychology Lab Asistant and Programmer Registration
           </Text>
   

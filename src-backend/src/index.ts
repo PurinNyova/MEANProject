@@ -38,13 +38,22 @@ const sessionMiddleware = session({
 
 app.use(express.json());
 
+const allowedOrigins = ['https://prod.purinnova.online', 'https://dev.purinnova.online'];
+
 const corsOptions = {
-  origin: 'https://prod.purinnova.online', 
+  origin: (origin: any, callback: any) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }
 
 var cors = require('cors')
 app.use(cors(corsOptions))
+
 
 app.use(sessionMiddleware)
 app.use("/api/users", usersRouter)

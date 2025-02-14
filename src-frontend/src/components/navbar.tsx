@@ -62,7 +62,8 @@ const navbar: React.FC = () => {
         textTransform={"uppercase"}
         textAlign={"center"}
         color={{base: "black", _dark: "white"}}
-        hideBelow={"30em"}
+        hideBelow={"35em"}
+        onClick={() => navigate('/')}
         >
         Universitas Gunadarma
         </Text>

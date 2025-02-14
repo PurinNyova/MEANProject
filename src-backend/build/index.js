@@ -27,8 +27,16 @@ const sessionMiddleware = (0, express_session_1.default)({
     }
 });
 app.use(express_1.default.json());
+const allowedOrigins = ['https://prod.purinnova.online', 'https://dev.purinnova.online'];
 const corsOptions = {
-    origin: 'https://prod.purinnova.online',
+    origin: (origin, callback) => {
+        if (allowedOrigins.includes(origin) || !origin) {
+            callback(null, true);
+        }
+        else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 };
 var cors = require('cors');

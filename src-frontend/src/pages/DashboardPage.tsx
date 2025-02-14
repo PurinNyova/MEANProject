@@ -128,6 +128,7 @@ const DashboardPage: React.FC = () => {
         
               if (data.success) {
                 setErrorStatus("Delete Success")
+                fetchData()
               } else {
                 console.error("API returned an error or success is false.");
               }
@@ -179,7 +180,7 @@ const DashboardPage: React.FC = () => {
     
             const submission = async () => {
              try {
-                  let url = import.meta.env.VITE_PROXY+"/api/db?edit=true";
+                  let url = import.meta.env.VITE_PROXY+"api/db?edit=true";
                   const response = await fetch(url, {
                     method: 'POST',
                     credentials: 'include',
@@ -240,12 +241,12 @@ const DashboardPage: React.FC = () => {
 
             <Text
             fontWeight={"bold"}
-            fontSize={{base:"8vw", sm:"5vw"}}
-            w={{base:"90%", sm:"70%"}}>
+            fontSize={{base:"10vw", md:"5vw"}}
+            w={{base:"100%", sm:"70%"}}>
             Welcome {username}
             </Text>
 
-            <Text w={{base:"80%", sm:"50%"}} fontSize={{base:"3vw", sm:"2vw"}} pb={"4vh"}>
+            <Text w={{base:"100%", md:"50%"}} fontSize={{base:"4vw", md:"2vw"}} pb={"4vh"}>
             Here you can see all currently enrolled students
             </Text>
 
