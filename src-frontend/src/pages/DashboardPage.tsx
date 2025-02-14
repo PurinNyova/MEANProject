@@ -205,15 +205,12 @@ const DashboardPage: React.FC = () => {
             const csvHeaders: (keyof UserData)[] = Object.keys(userDatabase[0]) as (keyof UserData)[];
             const csvRows: string[] = [];
           
-            // Add headers to the CSV rows
             csvRows.push(csvHeaders.join(','));
           
-            // Add data rows to the CSV
             userDatabase.forEach(user => {
               const row = csvHeaders.map(header => {
-                let value = user[header] !== undefined ? user[header] : ''; // Safely access user data
+                let value = user[header] !== undefined ? user[header] : '';
           
-                // Replace commas with periods in the tempatTanggalLahir field
                 if (typeof value === 'string') {
                   value = value.replace(/,/g, '.');
                 }
@@ -223,18 +220,14 @@ const DashboardPage: React.FC = () => {
               csvRows.push(row.join(','));
             });
           
-            // Create a CSV string
             const csvString = csvRows.join('\n');
-          
-            // Create a Blob for the CSV data
+
             const blob = new Blob([csvString], { type: 'text/csv' });
           
-            // Create a link to trigger the download
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = 'userDatabase.csv';
           
-            // Programmatically click the link to trigger the download
             link.click(); }
         
 

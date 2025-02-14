@@ -26,21 +26,17 @@ const sessionMiddleware = (0, express_session_1.default)({
         maxAge: 1000 * 60 * 60 * 24 // 1 day
     }
 });
-var cors = require('cors');
 app.use(express_1.default.json());
-app.use(cors());
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://prod.purinnova.online');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    next();
-});
+const corsOptions = {
+    origin: 'https://prod.purinnova.online',
+    credentials: true
+};
+var cors = require('cors');
+app.use(cors(corsOptions));
 app.use(sessionMiddleware);
 app.use("/api/users", users_1.default);
 app.use("/api/cdn", cdn_1.default);
 app.use("/api/db", dbtest_1.default);
-// Serve HTML file
 app.get('/', (req, res) => {
     if (req.session.user) {
         res.status(200).json({ type: 'session', success: true });
@@ -96,5 +92,5 @@ app.post('/logout', (req, res) => {
 });
 app.listen(PORT, () => {
     (0, db_1.connectDB)();
-    console.log(`Server is running at http://localhost:${PORT}`);
+    console.log(`Server is running at https://localhost:${PORT}`);
 });

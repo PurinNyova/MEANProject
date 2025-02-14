@@ -1,4 +1,4 @@
-import express, { json, Request, response, Response } from 'express';
+import express, { Request, Response } from 'express';
 import usersRouter from './routes/users';
 import cdnRouter from  './routes/cdn';
 import testRouter from './routes/dbtest';
@@ -8,6 +8,8 @@ import { connectDB } from './db/db';
 import session from 'express-session'
 import MongoStore from 'connect-mongo';
 import { compare } from 'bcryptjs'
+import path from "path"
+import fs from "fs"
 
 dotenv.config();
 
@@ -33,17 +35,16 @@ const sessionMiddleware = session({
 });
 
 
-var cors = require('cors')
-app.use(express.json());
-app.use(cors())
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://prod.purinnova.online');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    next();
-});
 
+app.use(express.json());
+
+const corsOptions = {
+  origin: 'https://prod.purinnova.online', 
+  credentials: true
+}
+
+var cors = require('cors')
+app.use(cors(corsOptions))
 
 app.use(sessionMiddleware)
 app.use("/api/users", usersRouter)
@@ -105,9 +106,8 @@ app.post('/logout', (req: Request, res: Response) => {
   });
 });
 
-
 app.listen(PORT, () => {
   connectDB();
-  console.log(`Server is running at http://localhost:${PORT}`);
+  console.log(`Server is running at https://localhost:${PORT}`);
 });
   

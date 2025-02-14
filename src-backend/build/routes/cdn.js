@@ -34,16 +34,13 @@ router.get("/uploads/:user", async (request, response) => {
                 return;
             }
             const archive = (0, archiver_1.default)('zip', {
-                zlib: { level: 9 } // Sets the compression level.
+                zlib: { level: 9 }
             });
-            // Handle archiver errors
             archive.on('error', (err) => {
                 throw err;
             });
-            // Pipe the output to the response
             response.attachment(`${user}.zip`);
             archive.pipe(response);
-            // Append files from directory
             archive.directory(directoryPath, false);
             await archive.finalize();
         }
