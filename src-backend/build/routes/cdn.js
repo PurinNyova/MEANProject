@@ -1,12 +1,15 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
-const fs_1 = require("fs");
-const util_1 = require("util");
 const path_1 = require("path");
-const router = (0, express_1.Router)();
-const readdirAsync = (0, util_1.promisify)(fs_1.readdir);
+const util_1 = require("util");
+const fs_1 = require("fs");
+const archiver_1 = __importDefault(require("archiver"));
 const statAsync = (0, util_1.promisify)(fs_1.stat);
+const readdirAsync = (0, util_1.promisify)(fs_1.readdir);
+const router = require('express').Router();
 router.get("/uploads/:user", async (request, response) => {
     const user = request.params.user;
     const directoryPath = `uploads/${user}`;
@@ -26,7 +29,23 @@ router.get("/uploads/:user", async (request, response) => {
         }
         else {
             const files = await readdirAsync(directoryPath);
-            response.status(200).json({ files });
+            if (files.length === 0) {
+                response.status(404).json({ error: "No files found" });
+                return;
+            }
+            const archive = (0, archiver_1.default)('zip', {
+                zlib: { level: 9 } // Sets the compression level.
+            });
+            // Handle archiver errors
+            archive.on('error', (err) => {
+                throw err;
+            });
+            // Pipe the output to the response
+            response.attachment(`${user}.zip`);
+            archive.pipe(response);
+            // Append files from directory
+            archive.directory(directoryPath, false);
+            await archive.finalize();
         }
     }
     catch (error) {

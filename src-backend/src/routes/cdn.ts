@@ -1,11 +1,13 @@
-import { Request, Response, Router } from "express";
-import { readdir, stat } from "fs";
-import { promisify } from "util";
-import { join } from "path";
+import { Request, Response } from 'express';
+import { join } from 'path';
+import { promisify } from 'util';
+import { stat, readdir } from 'fs';
+import archiver from 'archiver';
 
-const router = Router();
-const readdirAsync = promisify(readdir);
 const statAsync = promisify(stat);
+const readdirAsync = promisify(readdir);
+
+const router = require('express').Router();
 
 router.get("/uploads/:user", async (request: Request, response: Response) => {
     const user = request.params.user;
@@ -18,14 +20,35 @@ router.get("/uploads/:user", async (request: Request, response: Response) => {
             const fileStats = await statAsync(filePath);
             if (fileStats.isFile()) {
                 response.status(200).sendFile(filePath, { root: '.' });
-                return
+                return;
             } else {
                 response.status(404).json({ error: "File not found" });
-                return
+                return;
             }
         } else {
             const files = await readdirAsync(directoryPath);
-            response.status(200).json({ files });
+            if (files.length === 0) {
+                response.status(404).json({ error: "No files found" });
+                return;
+            }
+            
+            const archive = archiver('zip', {
+                zlib: { level: 9 } // Sets the compression level.
+            });
+
+            // Handle archiver errors
+            archive.on('error', (err) => {
+                throw err;
+            });
+
+            // Pipe the output to the response
+            response.attachment(`${user}.zip`);
+            archive.pipe(response);
+
+            // Append files from directory
+            archive.directory(directoryPath, false);
+
+            await archive.finalize();
         }
     } catch (error: any) {
         response.status(500).json({ error: error.message });

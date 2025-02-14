@@ -319,7 +319,7 @@ const DashboardPage: React.FC = () => {
                     <Table.Cell>{item.lastIPK}</Table.Cell>
                     <Table.Cell>
                     {item.files !== "no documents" ? (
-                        <Link href={`/api/cdn/${item.files}`}>
+                        <Link href={`${import.meta.env.VITE_PROXY}api/cdn/${item.files}`}>
                         <Button bg="purple.400">File</Button>
                         </Link>
                     ) : item.files}
