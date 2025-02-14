@@ -32,20 +32,18 @@ const sessionMiddleware = session({
   }
 });
 
-const allowedOrigins = ['http://dev.purinnova.online:5173', 'http://prod.purinnova.online'];
-
 
 var cors = require('cors')
 app.use(express.json());
 app.use(cors())
 app.use((req, res, next) => {
-  const origin = req.headers.origin || "";
-  if (allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  } 
-  res.header('Access-Control-Allow-Credentials', 'true');
-  next();
-})
+    res.header('Access-Control-Allow-Origin', 'http://prod.purinnova.online');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    next();
+});
+
 
 app.use(sessionMiddleware)
 app.use("/api/users", usersRouter)
@@ -53,7 +51,6 @@ app.use("/api/cdn", cdnRouter)
 app.use("/api/db",testRouter)
 
 
-// Serve HTML file
 app.get('/', (req: Request, res: Response) => {
   if (req.session.user) {
     res.status(200).json({type: 'session', success: true})

@@ -76,7 +76,7 @@ const main = async () => {
                 console.log("Goodbye!");
                 process.exit(0);
             default:
-                console.log("Invalid choice, please try again.");
+                console.log("Invalid");
         }
     }
 };

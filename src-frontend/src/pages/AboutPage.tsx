@@ -2,7 +2,7 @@
 const AboutPage = () => {
   return (
     <div>
-      AboutPage
+      Developed by Benedici @ IDM Tech
     </div>
   )
 }
