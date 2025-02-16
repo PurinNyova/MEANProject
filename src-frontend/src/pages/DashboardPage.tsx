@@ -109,11 +109,9 @@ const DashboardPage: React.FC = () => {
         console.log(userDatabase)
     }, [query])
 
-    // Example function to handle search
     const handleSearch = async () => {
-        // Assuming you set the `param` and `query` values from some input elements
-        const param = selectedParam; // example param
-        const queryValue = queryRef.current.toString(); // using state for the query value
+        const param = selectedParam;
+        const queryValue = queryRef.current.toString(); 
         await fetchData(param, queryValue);
     }
 
