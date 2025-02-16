@@ -8,8 +8,6 @@ import { connectDB } from './db/db';
 import session from 'express-session'
 import MongoStore from 'connect-mongo';
 import { compare } from 'bcryptjs'
-import path from "path"
-import fs from "fs"
 
 dotenv.config();
 

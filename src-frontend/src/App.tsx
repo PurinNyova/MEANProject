@@ -91,7 +91,7 @@ const App = () => {
     
     <ButtonlessPopup dialogTitle={"Message"} dialogButtonText='Ok' openProp={errorStatus !== ""} onClickFunc={() => setErrorStatus("")}>
             <Text>{errorStatus}</Text>
-        </ButtonlessPopup>
+      </ButtonlessPopup>
      <PanelContext.Provider value={{errorStatus, setErrorStatus, sessionCheck, username}}>
        <Navbar/>
        <Routes>

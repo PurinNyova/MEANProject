@@ -1,5 +1,5 @@
 import { Box, Button, Container, Flex, For, Group, Input, Link, MenuContent, MenuItem, MenuRoot, MenuSelectionDetails, MenuTrigger, Table, Text } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom';
 
 interface DomainSelectProps {
@@ -71,6 +71,8 @@ const ListPage: React.FC = () => {
   const [query, setQuery] = useState("")
   const [selectedParam, setSelectedParam] = useState("name")
   const location = useLocation()
+  const queryRef = useRef("")
+  queryRef.current = query
 
   const fetchData = async (param?: string, queryValue?: string) => {
     try {
@@ -92,21 +94,23 @@ const ListPage: React.FC = () => {
       console.error("Error fetching data:", error);
     }
   };
-  // Initial fetch
+
   useEffect(() => {
     if (param && value) {
       fetchData(param, value)
     } else {fetchData()}
   }, [location]);
 
-  // Example function to handle search
-  const handleSearch = (event: React.FormEvent) => {
-    event.preventDefault()
-    // Assuming you set the `param` and `query` values from some input elements
-    const param = selectedParam; // example param
-    const queryValue = query; // using state for the query value
-    fetchData(param, queryValue);
-  }
+  useEffect(() => {
+          handleSearch()
+          console.log(userDatabase)
+      }, [query])
+  
+  const handleSearch = async () => {
+      const param = selectedParam;
+      const queryValue = queryRef.current.toString(); 
+      await fetchData(param, queryValue);
+    }
   
 
   return (
@@ -137,7 +141,7 @@ const ListPage: React.FC = () => {
               <Input placeholder='Query'
               w={"100%"} unstyled h={"95%"} background={"none"} focusVisibleRing={"none"}
               color={"black"}
-              onChange={(data) => {setQuery(data.target.value); handleSearch(data)}}/>
+              onChange={(data) => {setQuery(data.target.value)}}/>
               <DomainSelect onSelectValue={setSelectedParam}/>
             </Group>
           
