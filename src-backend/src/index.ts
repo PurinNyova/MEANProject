@@ -36,7 +36,7 @@ const sessionMiddleware = session({
 
 app.use(express.json());
 
-const allowedOrigins = ['https://prod.purinnova.online', 'https://dev.purinnova.online'];
+const allowedOrigins = ['https://prod.purinnova.online', 'https://dev.purinnova.online', 'http://localhost:3002'];
 
 const corsOptions = {
   origin: (origin: any, callback: any) => {

@@ -133,7 +133,7 @@ const LoginPage = () => {
 
                     <Field label="Password" invalid={(emptyField && loginInterface.password !== "")}>
                         <Input name='password' placeholder='Password' w={"100%"} unstyled h={"50px"}
-                        focusRingColor={"none"} pl={"10px"} color={"black"}
+                        focusRingColor={"none"} pl={"10px"} color={"black"} type="password"
                         backgroundColor={"white"} borderRadius={"20px"}
                         onChange={handleInputChange}/>
                     </Field>

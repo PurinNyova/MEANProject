@@ -27,7 +27,7 @@ const sessionMiddleware = (0, express_session_1.default)({
     }
 });
 app.use(express_1.default.json());
-const allowedOrigins = ['https://prod.purinnova.online', 'https://dev.purinnova.online'];
+const allowedOrigins = ['https://prod.purinnova.online', 'https://dev.purinnova.online', 'http://localhost:3002'];
 const corsOptions = {
     origin: (origin, callback) => {
         if (allowedOrigins.includes(origin) || !origin) {
