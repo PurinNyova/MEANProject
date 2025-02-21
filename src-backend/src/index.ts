@@ -8,6 +8,7 @@ import { connectDB } from './db/db';
 import session from 'express-session'
 import MongoStore from 'connect-mongo';
 import { compare } from 'bcryptjs'
+import rateLimit from 'express-rate-limit';
 
 dotenv.config();
 
@@ -21,14 +22,23 @@ declare module "express-session" {
   }
 }
 
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // 5 attempts per IP
+  message: { type: 'error', message: 'Too many login attempts, please try again later' },
+});
+
 const sessionMiddleware = session({
   secret: 'didYouKnowThatVaporeon?',
-  resave: true,
+  resave: false,
   saveUninitialized: true,
   store: MongoStore.create({mongoUrl: 'mongodb://localhost:27017/main_database', collectionName: 'sessions'}
   ),
   cookie: {
-    maxAge: 1000 * 60 * 60 * 24 // 1 day
+    maxAge: 1000 * 60 * 60 * 24, // 1 day
+    secure: true,
+    httpOnly: true,
+    sameSite: "lax",
   }
 });
 
@@ -75,33 +85,44 @@ app.get('/login', async (req: Request, res: Response) => {
   }
 });
 
-app.post('/login', express.urlencoded({ extended: true }), async (req: Request, res: Response) => {
-  if (req.session.user) {
-    res.status(200).json({ type: 'session', success: true, username: req.session.user });
-  } else {
+app.post('/login', loginLimiter, express.urlencoded({ extended: true }), async (req: Request, res: Response) => {
+    if (req.session.user) {
+      res.status(200).json({ type: 'session', success: true, username: req.session.user });
+      return
+    }
+
     const { name, email, password } = req.body;
-    
+
+    // Input validation
+    if (!name || !email || !password) {
+      res.status(400).json({ type: 'error', message: 'Missing required fields' });
+      return
+    }
+
     try {
-      const adminQuery = await AdminSchema.findOne({ $and: [{ email: email }, { name: name }] });
-      
-      if (adminQuery) {
-        const check = await compare(password, adminQuery.password);
-        
-        if (check) {
-          req.session.user = name;
-          res.status(201).json({ type: 'login', success: true });
-        } else {
-          res.status(401).json({ type: 'login', success: false });
-        }
+      const adminQuery = await AdminSchema.findOne({ $and: [{ email }, { name }] });
+
+      if (!adminQuery) {
+        res.status(401).json({ type: 'login', success: false, message: 'Invalid credentials' });
+        return
+      }
+
+      const check = await compare(password, adminQuery.password);
+      if (check) {
+        req.session.user = name;
+        res.status(201).json({ type: 'login', success: true });
+        return 
       } else {
-        res.status(401).json({ type: 'login', success: false, message: 'no user' });
+        res.status(401).json({ type: 'login', success: false, message: 'Invalid credentials' });
+        return 
       }
     } catch (err) {
-      console.error(err);
-      res.status(500).json({ type: 'error', message: 'An error occurred' });
+      console.error('Login error:', err);
+      res.status(500).json({ type: 'error', message: 'Server error' });
+      return 
     }
   }
-});
+);
 
 app.post('/logout', (req: Request, res: Response) => {
   req.session.destroy((err) => {

@@ -15,9 +15,10 @@ import Loader from "./components/Loader";
 import ButtonlessPopup from "./components/buttonlessPopup";
 
 export type ApiResponse = {
-  type?: string; // Users keyed by string indices and `success` boolean
+  type?: string;
   success: boolean;
   username?: string;
+  message?: string;
 };
 
 interface PageProps {

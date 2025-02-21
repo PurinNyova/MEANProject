@@ -83,7 +83,7 @@ const LoginPage = () => {
               setErrorStatus("Login Success")
               navigate('/dashboard')
           } else {
-              setErrorStatus("Login Failed. Make sure your Password, Username, and Email, is correct")
+              setErrorStatus(data.message || "Login Failed. Check your Login Credentials")
           }
       } catch (error) {
           console.error("Error fetching data:", error);
