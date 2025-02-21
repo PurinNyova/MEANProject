@@ -48,7 +48,6 @@ const RegisterPage = () => {
 
     const navigate = useNavigate()
     const HCKEY: string = import.meta.env.VITE_HC_SITE_KEY
-    console.log(HCKEY)
 
     const [isHuman, setIsHuman] = useState<boolean>(false)
     const [emptyField, setEmptyField] = useState<boolean | undefined>(false)
@@ -106,7 +105,6 @@ const RegisterPage = () => {
 
         let formData = new FormData();
         for (const key in data) {
-            console.log(key)
             if (data.hasOwnProperty(key)) {
               const dataKey = key as keyof UserData; // Use keyof operator
               if (Array.isArray(data[dataKey])) {
@@ -326,7 +324,7 @@ const RegisterPage = () => {
                     </Field>
 
                     <Field label="Upload Dokumen">
-                        <FileUploadRoot maxW="100%" alignItems="stretch" maxFiles={10} accept={"application/pdf"}
+                        <FileUploadRoot maxW="100%" alignItems="stretch" maxFiles={10} accept={"application/pdf"} maxFileSize={15*2^20} //15MiB
                         onFileAccept={(data) => setUserData(prevState => ({
                             ...prevState,
                             ["Document"]: data.files
@@ -341,7 +339,7 @@ const RegisterPage = () => {
                                 bg="white"
                                 color={"black"}
                                 label="Drag and drop here to upload"
-                                description=".pdf up to 5MB"
+                                description=".pdf up to 15MiB"
                             />
                             <FileUploadList/>
                             <FileUploadClearTrigger asChild>

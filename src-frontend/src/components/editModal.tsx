@@ -17,7 +17,6 @@ const EditModal: React.FC<{onStartFunction: Function}> = ({onStartFunction}) => 
   }, [])
 
   useEffect(() => {
-    console.log(user)
     setLoading(false)
   }, [user])
 

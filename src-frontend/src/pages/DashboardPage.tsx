@@ -106,7 +106,6 @@ const DashboardPage: React.FC = () => {
 
     useEffect(() => {
         handleSearch()
-        console.log(userDatabase)
     }, [query])
 
     const handleSearch = async () => {
@@ -165,16 +164,15 @@ const DashboardPage: React.FC = () => {
     
             let formData = new FormData();
             for (const key in data) {
-                console.log(key)
                 if (data.hasOwnProperty(key)) {
                   const dataKey = key as keyof UserData; // Use keyof operator
                     const value = data[dataKey]?.toString() || '';
                     formData.append(key, value);
                 }
             }
-            for (var pair of formData.entries()) {
-                console.log(pair[0]+ ', ' + pair[1]); 
-            }
+            // for (var pair of formData.entries()) {
+            //     console.log(pair[0]+ ', ' + pair[1]); 
+            // }
     
             const submission = async () => {
              try {

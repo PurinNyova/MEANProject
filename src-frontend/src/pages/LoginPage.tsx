@@ -1,10 +1,12 @@
-import { Text, Button, Input, Flex, Fieldset, Stack } from '@chakra-ui/react'
+import { Text, Button, Input, Flex, Fieldset, Stack, IconButton } from '@chakra-ui/react'
 import { Container } from '@chakra-ui/react/container'
 import { useContext, useState } from 'react'
 import { formStyle } from './ListPage'
 import { Field } from '../components/ui/field';
 import { ApiResponse, PanelContext } from '../App';
 import { useNavigate } from 'react-router-dom';
+import { InputGroup } from '../components/ui/input-group';
+import { BsEye, BsEyeSlash } from 'react-icons/bs';
 
 interface LoginInterface {
   name: string;
@@ -17,6 +19,7 @@ const LoginPage = () => {
     const navigate = useNavigate();
 
     const [emptyField, setEmptyField] = useState<boolean | undefined>(false)
+    const [passwordVisibility, setPasswordVisibility] = useState(false)
     const {setErrorStatus} = useContext(PanelContext)
 
     const [loginInterface, setLoginInterface] = useState<LoginInterface>({
@@ -31,7 +34,6 @@ const LoginPage = () => {
             ...prevState,
             [name]: value
         }));
-        console.log(loginInterface)
     };
 
     const checkObjKey = (obj: LoginInterface) => {
@@ -75,11 +77,13 @@ const LoginPage = () => {
           const data: ApiResponse = await response.json();
   
           if (data.success && data.type === 'login') {
-                navigate('/dashboard')
+              setErrorStatus("Login Success")
+              navigate('/dashboard')
           } else if (data.success && data.type === 'session') {
-                navigate('/dashboard')
+              setErrorStatus("Login Success")
+              navigate('/dashboard')
           } else {
-              console.error("API returned an error or success is false.");
+              setErrorStatus("Login Failed. Make sure your Password, Username, and Email, is correct")
           }
       } catch (error) {
           console.error("Error fetching data:", error);
@@ -132,10 +136,19 @@ const LoginPage = () => {
                     </Field>
 
                     <Field label="Password" invalid={(emptyField && loginInterface.password !== "")}>
-                        <Input name='password' placeholder='Password' w={"100%"} unstyled h={"50px"}
-                        focusRingColor={"none"} pl={"10px"} color={"black"} type="password"
-                        backgroundColor={"white"} borderRadius={"20px"}
-                        onChange={handleInputChange}/>
+                        <InputGroup w={"100%"}
+                        flex={"1"} endElement={
+                          passwordVisibility ? (
+                            <IconButton fontSize={"4rem"} onClick={() => setPasswordVisibility(!passwordVisibility)}><BsEyeSlash/></IconButton>
+                          ) : (
+                            <IconButton fontSize={"4rem"} onClick={() => setPasswordVisibility(!passwordVisibility)}><BsEye/></IconButton>
+                            )
+                            }>
+                          <Input name='password' placeholder='Password' w={"100%"} unstyled h={"50px"}
+                          focusRingColor={"none"} pl={"10px"} color={"black"}
+                          backgroundColor={"white"} borderRadius={"20px"} type={passwordVisibility ? 'text' : 'password'}
+                          onChange={handleInputChange}/>
+                        </InputGroup>
                     </Field>
 
                 </Fieldset.Content>
